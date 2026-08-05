@@ -5,7 +5,7 @@ const authRoutes = ["/login", "/register"];
 
 const protectedRoutes = ["/dashboard", "/chat", "/documents", "/settings"];
 
-export default auth((req) => {
+export default auth(function proxy(req) {
   const isLoggedIn = !!req.auth;
 
   const pathname = req.nextUrl.pathname;
