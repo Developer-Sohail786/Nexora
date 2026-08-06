@@ -1,6 +1,12 @@
 "use client";
 
-import type { Dispatch, KeyboardEvent, SetStateAction } from "react";
+import {
+  useEffect,
+  useRef,
+  type Dispatch,
+  type KeyboardEvent,
+  type SetStateAction,
+} from "react";
 
 import { Globe, Lock, Mic, Send, Square } from "lucide-react";
 
@@ -73,6 +79,57 @@ export default function ChatInput({
   setShowModels,
   isPro,
 }: ChatInputProps) {
+
+  const textareaRef= useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+  function handleShortcut(e: globalThis.KeyboardEvent) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      textareaRef.current?.focus();
+    }
+  }
+
+  window.addEventListener("keydown", handleShortcut);
+
+  return () => {
+    window.removeEventListener("keydown", handleShortcut);
+  };
+}, []);
+
+useEffect(() => {
+  function handleGlobalTyping(e: globalThis.KeyboardEvent) {
+    const target = e.target as HTMLElement;
+
+    if (
+      target.tagName === "INPUT" ||
+      target.tagName === "TEXTAREA" ||
+      target.isContentEditable
+    ) {
+      return;
+    }
+
+    if (e.ctrlKey || e.metaKey || e.altKey) {
+      return;
+    }
+
+    if (e.key.length !== 1) {
+      return;
+    }
+
+    textareaRef.current?.focus();
+
+    setInputValue((prev) => prev + e.key);
+
+    e.preventDefault();
+  }
+
+  window.addEventListener("keydown", handleGlobalTyping);
+
+  return () => {
+    window.removeEventListener("keydown", handleGlobalTyping);
+  };
+}, [setInputValue]);
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -100,6 +157,7 @@ export default function ChatInput({
 
           <div className="flex items-end gap-3">
             <textarea
+              ref={textareaRef}
               rows={1}
               value={inputValue}
               onChange={({ target }) => setInputValue(target.value)}
