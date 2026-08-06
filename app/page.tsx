@@ -4,7 +4,7 @@ import FeaturesSection from "@/components/landing/features-section";
 import HeroSection from "@/components/landing/hero-section";
 import PricingCta from "@/components/landing/pricing-cta";
 import Footer from "@/components/layout/footer";
-// import Navbar from "@/components/layout/navbar";
+
 
 export default function Home() {
   return (
