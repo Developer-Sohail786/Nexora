@@ -2,6 +2,8 @@
 
 import { useFileUpload } from "@/hooks/use-file-upload";
 import {  File } from "lucide-react";
+import EmptyState from "@/components/ui/empty-state";
+import { FileClock } from "lucide-react";
 
 export default function ProcessingFiles() {
   const{
@@ -14,7 +16,11 @@ export default function ProcessingFiles() {
       <h2 className="mb-4 text-lg font-semibold text-white">Processing Files</h2>
 
       <div className="rounded-xl border border-white/[0.07] bg-[#1C1926] p-4 flex flex-col gap-5">
-        {!isUploading? (<div className="py-6 text-center"><p className="text-sm text-[#7A748F]">No files are currently being processed</p></div>):(
+        {!isUploading? (<EmptyState
+  icon={<FileClock className="h-8 w-8 text-[#7C5CFC]" />}
+  title="No active uploads"
+  description="Upload a document to build your AI knowledge base."
+/>):(
         <div>
           <div className="mb-2 flex items-center justify-between">
             <div className="flex items-center gap-2">

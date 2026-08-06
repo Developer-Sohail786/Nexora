@@ -12,6 +12,9 @@ import { formatDistanceToNow } from "date-fns";
 
 import type { Activity } from "./types";
 
+import EmptyState from "@/components/ui/empty-state";
+import { Activity as ActivityIcon } from "lucide-react";
+
 interface RecentActivityProps {
   activities: Activity[];
 }
@@ -73,11 +76,11 @@ export default function RecentActivity({
       </div>
 
       {activities.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-[#1C1926] py-12 text-center">
-          <p className="text-sm text-[#7A748F]">
-            No recent activity yet.
-          </p>
-        </div>
+  <EmptyState
+  icon={<ActivityIcon className="h-8 w-8 text-[#7C5CFC]" />}
+  title="No recent activity"
+  description="Your chats, uploaded files, and generated images will appear here as you use Nexora."
+/>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {activities.map((activity) => (

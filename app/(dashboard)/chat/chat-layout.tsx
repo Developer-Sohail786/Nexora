@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 
-
 import ChatInput from "./chat-input";
 import ChatMessage from "./chat-message";
 
@@ -12,7 +11,8 @@ import type { ChatMessageData, Attachment } from "@/types/chat";
 import { AI_MODELS } from "@/services/ai/types";
 import type { AIModel } from "@/services/ai/types";
 
-
+import EmptyState from "@/components/ui/empty-state";
+import { MessageCircle } from "lucide-react";
 
 export type ModelOption = {
   id: AIModel;
@@ -22,7 +22,7 @@ export type ModelOption = {
 type ChatLayoutProps = {
   messages: ChatMessageData[];
   userImage: string | null;
-  isPro: boolean
+  isPro: boolean;
 };
 
 const MODELS: ModelOption[] = [
@@ -48,7 +48,11 @@ const MODELS: ModelOption[] = [
   },
 ];
 
-export default function ChatLayout({ messages, userImage,isPro }: ChatLayoutProps) {
+export default function ChatLayout({
+  messages,
+  userImage,
+  isPro,
+}: ChatLayoutProps) {
   const [selectedModel, setSelectedModel] = useState<ModelOption>(MODELS[0]);
 
   const [showModels, setShowModels] = useState(false);
@@ -82,39 +86,39 @@ export default function ChatLayout({ messages, userImage,isPro }: ChatLayoutProp
   return (
     <div className="flex h-full bg-[#111018] text-white">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        
-
         <main className="min-h-0 flex-1 overflow-y-auto">
           <div className="flex flex-col gap-6 px-6 py-6">
             {chatMessages.length === 0 ? (
-              <p className="text-center text-sm text-[#7A748F] mt-50">
-                Start a conversation...
-              </p>
+              <div className="flex h-full items-center justify-center py-20">
+                <EmptyState
+                  icon={<MessageCircle className="h-8 w-8 text-[#7C5CFC]" />}
+                  title="Welcome to Nexora"
+                  description="Ask questions, upload documents, search the web, or generate AI images to get started."
+                />
+              </div>
             ) : (
-             chatMessages.map((message) => {
-  
-
-  return (
-<ChatMessage
-  key={message.id}
-  id={message.id}
-  role={message.role as "user" | "ai"}
-  type={message.type}
-  content={message.content??""}
-  imageUrl={message.imageUrl}
-  model={message.model}
-  attachments={
-    Array.isArray(message.attachments)
-      ? (message.attachments as Attachment[])
-      : []
-  }
-  userImage={userImage}
-  isStreaming={message.id === streamingMessageId}
-  onEdit={handleEdit}
-  onRegenerate={handleRegenerate}
-/>
-  );
-})
+              chatMessages.map((message) => {
+                return (
+                  <ChatMessage
+                    key={message.id}
+                    id={message.id}
+                    role={message.role as "user" | "ai"}
+                    type={message.type}
+                    content={message.content ?? ""}
+                    imageUrl={message.imageUrl}
+                    model={message.model}
+                    attachments={
+                      Array.isArray(message.attachments)
+                        ? (message.attachments as Attachment[])
+                        : []
+                    }
+                    userImage={userImage}
+                    isStreaming={message.id === streamingMessageId}
+                    onEdit={handleEdit}
+                    onRegenerate={handleRegenerate}
+                  />
+                );
+              })
             )}
 
             <div ref={messageEndRef} />
@@ -123,7 +127,7 @@ export default function ChatLayout({ messages, userImage,isPro }: ChatLayoutProp
 
         <div className="shrink-0 border-t border-white/6 px-6 py-4">
           <ChatInput
-          isPro={isPro}
+            isPro={isPro}
             inputValue={inputValue}
             setInputValue={setInputValue}
             isSending={isSending}
