@@ -14,7 +14,7 @@ export function FreePricingCard({
     <div className="rounded-2xl border border-white/[0.07] bg-[#1C1926] p-8 transition-all duration-300 hover:-translate-y-2 hover:border-[#7C5CFC]/30 hover:shadow-[0_20px_50px_rgba(124,92,252,0.12)]">
       <h2 className="text-2xl font-bold text-white">Free</h2>
 
-      <p className="mt-1 mb-6 text-sm text-[#7A748F]">
+      <p className="mb-6 mt-1 text-sm text-[#7A748F]">
         For individuals exploring AI capabilities.
       </p>
 
@@ -27,8 +27,14 @@ export function FreePricingCard({
       </p>
 
       <button
+        type="button"
+        aria-label={
+          currentPlan === "FREE"
+            ? "Current free plan"
+            : "Select free plan"
+        }
         disabled={currentPlan === "FREE"}
-        className={`mb-8 w-full rounded-lg py-2.5 text-sm font-medium transition-colors ${
+        className={`mb-8 w-full rounded-lg py-2.5 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018] ${
           currentPlan === "FREE"
             ? "cursor-default border border-emerald-500 bg-emerald-500/10 text-emerald-400"
             : "border border-white/[0.07] text-white hover:bg-white/5"
@@ -42,6 +48,7 @@ export function FreePricingCard({
       <div className="space-y-3">
         <div className="flex items-center gap-2.5">
           <Check
+            aria-hidden="true"
             size={14}
             className="shrink-0 text-[#7A748F]"
           />
@@ -52,6 +59,7 @@ export function FreePricingCard({
 
         <div className="flex items-center gap-2.5">
           <Check
+            aria-hidden="true"
             size={14}
             className="shrink-0 text-[#7A748F]"
           />
@@ -62,6 +70,7 @@ export function FreePricingCard({
 
         <div className="flex items-center gap-2.5">
           <Check
+            aria-hidden="true"
             size={14}
             className="shrink-0 text-[#7A748F]"
           />
@@ -72,6 +81,7 @@ export function FreePricingCard({
 
         <div className="flex items-center gap-2.5">
           <Check
+            aria-hidden="true"
             size={14}
             className="shrink-0 text-[#7A748F]"
           />
@@ -93,6 +103,11 @@ export function ProPricingCard({
     <div className="relative rounded-2xl border border-[#7C5CFC]/40 bg-[#1C1926] p-8 transition-all duration-300 hover:-translate-y-2 hover:border-[#7C5CFC] hover:shadow-[0_25px_60px_rgba(124,92,252,0.35)]">
       <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
         <span
+          aria-label={
+            currentPlan === "PRO"
+              ? "Current plan"
+              : "Most popular plan"
+          }
           className={`rounded-full px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-white ${
             currentPlan === "PRO"
               ? "bg-emerald-500"
@@ -109,7 +124,7 @@ export function ProPricingCard({
         Pro
       </h2>
 
-      <p className="mt-1 mb-6 text-sm text-[#7A748F]">
+      <p className="mb-6 mt-1 text-sm text-[#7A748F]">
         For professionals requiring maximum velocity.
       </p>
 
@@ -122,13 +137,19 @@ export function ProPricingCard({
       </p>
 
       <button
+        type="button"
+        aria-label={
+          currentPlan === "PRO"
+            ? "Current Pro plan"
+            : "Upgrade to Pro"
+        }
         onClick={() => {
           if (currentPlan === "PRO") return;
 
           checkout();
         }}
         disabled={currentPlan === "PRO"}
-        className={`mb-8 w-full rounded-lg py-2.5 text-sm font-semibold transition-all ${
+        className={`mb-8 w-full rounded-lg py-2.5 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018] ${
           currentPlan === "PRO"
             ? "cursor-default bg-emerald-500 text-white"
             : "cursor-pointer bg-[#7C5CFC] text-white shadow-[0_0_16px_rgba(124,92,252,0.35)] hover:bg-[#6B4EE8] active:scale-[0.98]"
@@ -142,6 +163,7 @@ export function ProPricingCard({
       <div className="space-y-3">
         <div className="flex items-center gap-2.5">
           <CheckCircle
+            aria-hidden="true"
             size={14}
             className="shrink-0 text-[#7C5CFC]"
           />
@@ -152,6 +174,7 @@ export function ProPricingCard({
 
         <div className="flex items-center gap-2.5">
           <CheckCircle
+            aria-hidden="true"
             size={14}
             className="shrink-0 text-[#7C5CFC]"
           />
@@ -162,6 +185,7 @@ export function ProPricingCard({
 
         <div className="flex items-center gap-2.5">
           <CheckCircle
+            aria-hidden="true"
             size={14}
             className="shrink-0 text-[#7C5CFC]"
           />
@@ -172,6 +196,7 @@ export function ProPricingCard({
 
         <div className="flex items-center gap-2.5">
           <CheckCircle
+            aria-hidden="true"
             size={14}
             className="shrink-0 text-[#7C5CFC]"
           />
@@ -182,6 +207,7 @@ export function ProPricingCard({
 
         <div className="flex items-center gap-2.5">
           <CheckCircle
+            aria-hidden="true"
             size={14}
             className="shrink-0 text-[#7C5CFC]"
           />

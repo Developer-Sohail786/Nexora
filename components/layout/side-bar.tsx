@@ -59,26 +59,36 @@ export default function Sidebar({ chats }: { chats: Chat[] }) {
         </div>
         {/* Close button — mobile only */}
         <button
-          onClick={() => setOpen(false)}
-          className="ml-auto md:hidden text-[#7A748F] hover:text-white"
-        >
-          <X size={16} />
+  type="button"
+  aria-label="Close sidebar"
+  onClick={() => setOpen(false)}
+  className="ml-auto rounded md:hidden text-[#7A748F] transition hover:text-white focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#17131F]"
+>
+          <X
+  aria-hidden="true"
+  size={16}
+/>
         </button>
       </div>
 
       {/* New Chat */}
       <div className="px-3 pb-4">
-        <button
-          onClick={createChat}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#7C5CFC] px-3 py-2 text-sm font-medium text-white hover:bg-[#6B4EE8] transition-all active:scale-[0.98] cursor-pointer"
+       <button
+  type="button"
+  aria-label="Create new conversation"
+  onClick={createChat}
+          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#7C5CFC] px-3 py-2 text-sm font-medium text-white transition-all hover:bg-[#6B4EE8] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#17131F]"
         >
-          <Plus size={15} />
+          <Plus
+  aria-hidden="true"
+  size={15}
+/>
           New Chat
         </button>
       </div>
 
       {/* Main Nav */}
-      <nav className="flex flex-col gap-0.5 px-3">
+      <nav aria-label="Main navigation" className="flex flex-col gap-0.5 px-3">
         <Link
           href="/dashboard"
           onClick={() => setOpen(false)}
@@ -158,7 +168,10 @@ export default function Sidebar({ chats }: { chats: Chat[] }) {
       </nav>
 
       {/* Recent */}
-      <div className="mt-6 flex-1 overflow-y-auto px-3">
+      <div
+  aria-label="Recent conversations"
+  className="mt-6 flex-1 overflow-y-auto px-3"
+>
         <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-widest text-[#4E4860]">
           Recent
         </p>
@@ -187,18 +200,20 @@ export default function Sidebar({ chats }: { chats: Chat[] }) {
       </div>
 
       {/* Bottom Nav */}
-      <nav className="flex flex-col gap-0.5 border-t border-white/[0.06] px-3 py-4">
-        <a
+      <nav  aria-label="Secondary navigation" className="flex flex-col gap-0.5 border-t border-white/[0.06] px-3 py-4">
+        <a  aria-label="Support"
           href="#"
           className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#A09BB5] hover:bg-white/5 hover:text-white transition-all"
         >
-          <HelpCircle size={17} className="text-[#7C5CFC]" /> Support
+          <HelpCircle aria-hidden="true" size={17} className="text-[#7C5CFC]" /> Support
         </a>
         <button
-          onClick={() => signOut()}
-          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#A09BB5] hover:bg-white/5 hover:text-white transition-all"
+  type="button"
+  aria-label="Log out"
+  onClick={() => signOut()}
+          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#A09BB5] transition-all hover:bg-white/5 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#17131F]"
         >
-          <LogOut size={17} className="text-[#7C5CFC]" /> Log Out
+          <LogOut  aria-hidden="true" size={17} className="text-[#7C5CFC]" /> Log Out
         </button>
       </nav>
     </aside>
@@ -212,11 +227,14 @@ export default function Sidebar({ chats }: { chats: Chat[] }) {
       </div>
 
       {/* Mobile hamburger */}
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed top-4 left-4 z-50 md:hidden flex items-center justify-center h-9 w-9 rounded-lg bg-[#17131F] border border-white/[0.06] text-[#7A748F] hover:text-white"
+  <button
+  type="button"
+  aria-label="Open sidebar"
+  aria-expanded={open}
+  onClick={() => setOpen(true)}
+        className="fixed top-4 left-4 z-50 flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.06] bg-[#17131F] text-[#7A748F] transition hover:text-white focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018] md:hidden"
       >
-        <Menu size={18} />
+        <Menu aria-hidden="true" size={18} />
       </button>
 
       {/* Mobile drawer */}

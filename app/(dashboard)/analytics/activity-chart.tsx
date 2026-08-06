@@ -13,15 +13,23 @@ import {
 import { ActivityPoint } from "./types";
 
 interface Props {
-  data: ActivityPoint[]
+  data: ActivityPoint[];
 }
 
-export default function ActivityChart({data,}:Props) {
+export default function ActivityChart({
+  data,
+}: Props) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#1C1926] p-6">
+    <section
+      aria-labelledby="activity-chart-heading"
+      className="rounded-2xl border border-white/10 bg-[#1C1926] p-6"
+    >
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-white">
+          <h2
+            id="activity-chart-heading"
+            className="text-lg font-semibold text-white"
+          >
             Activity
           </h2>
 
@@ -31,7 +39,11 @@ export default function ActivityChart({data,}:Props) {
         </div>
       </div>
 
-      <div className="h-[340px]">
+      <div
+        role="img"
+        aria-label="Line chart showing chat activity over the last seven days"
+        className="h-[340px]"
+      >
         <ResponsiveContainer
           width="100%"
           height="100%"

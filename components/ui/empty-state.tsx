@@ -14,9 +14,15 @@ export default function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-[#1C1926] px-8 py-14 text-center">
-
-      <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#2A2640]">
+    <section
+      role="status"
+      aria-live="polite"
+      className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-[#1C1926] px-8 py-14 text-center"
+    >
+      <div
+        aria-hidden="true"
+        className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#2A2640]"
+      >
         {icon}
       </div>
 
@@ -33,7 +39,6 @@ export default function EmptyState({
           {action}
         </div>
       )}
-
-    </div>
+    </section>
   );
 }

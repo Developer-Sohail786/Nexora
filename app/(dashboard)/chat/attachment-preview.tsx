@@ -30,22 +30,27 @@ export default function AttachmentPreview({
           key={file.id}
           className="flex items-center gap-2 rounded-lg border border-white/10 bg-[#242034] px-3 py-2"
         >
-          <Paperclip
-            size={14}
-            className="text-[#7C5CFC]"
-          />
+         <Paperclip
+  aria-hidden="true"
+  size={14}
+  className="text-[#7C5CFC]"
+/>
 
-          <span className="max-w-[180px] cursor-pointer truncate text-xs text-white">
+         <span
+  title={file.name}
+  className="max-w-[180px] cursor-pointer truncate text-xs text-white"
+>
             {file.name}
           </span>
 
-          <button
-            type="button"
-            onClick={() => removeFile(file.id)}
-            className="ml-1 text-xs text-[#7A748F] transition hover:text-red-400"
-          >
-            ✕
-          </button>
+         <button
+  type="button"
+  aria-label={`Remove ${file.name}`}
+  onClick={() => removeFile(file.id)}
+  className="ml-1 rounded text-xs text-[#7A748F] transition hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]"
+>
+  <span aria-hidden="true">✕</span>
+</button>
         </div>
       ))}
     </div>

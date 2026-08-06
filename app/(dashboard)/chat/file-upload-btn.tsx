@@ -5,9 +5,7 @@ import { Paperclip } from "lucide-react";
 import type { Attachment } from "@/types/chat";
 
 type FileUploadButtonProps = {
-  uploadFile: (
-    file: File,
-  ) => Promise<Attachment>;
+  uploadFile: (file: File) => Promise<Attachment>;
 };
 
 export default function FileUploadButton({
@@ -21,6 +19,7 @@ export default function FileUploadButton({
         ref={fileInputRef}
         type="file"
         accept=".pdf,.doc,.docx,.txt"
+        aria-label="Upload document"
         className="hidden"
         onChange={async (e) => {
           const file = e.target.files?.[0];
@@ -37,10 +36,11 @@ export default function FileUploadButton({
 
       <button
         type="button"
+        aria-label="Upload document"
         onClick={() => fileInputRef.current?.click()}
-        className="shrink-0 cursor-pointer text-[#7A748F] transition-colors hover:text-white"
+        className="shrink-0 cursor-pointer text-[#7A748F] transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]"
       >
-        <Paperclip size={17} />
+        <Paperclip aria-hidden="true" size={17} />
       </button>
     </>
   );

@@ -24,7 +24,7 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
   const [lastName, setLastName] = useState(user?.lastName ?? "");
   const [username, setUsername] = useState(user?.username ?? user?.name ?? "");
   const [loading, setLoading] = useState(false);
-  const [image, setImage]= useState(user?.image ?? "")
+  const [image, setImage] = useState(user?.image ?? "");
 
   const handleSave = async () => {
     try {
@@ -49,7 +49,7 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
         throw new Error(data.message);
       }
 
-     toast.success("Your profile has been updated.");
+      toast.success("Your profile has been updated.");
     } catch {
       toast.error("Unable to update your profile. Please try again.");
     } finally {
@@ -68,39 +68,46 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
           <CldUploadWidget
             uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
             onSuccess={(result: CloudinaryUploadWidgetResults) => {
-  if (
-    result.info &&
-    typeof result.info === "object" &&
-    "secure_url" in result.info
-  ) {
-    const imageUrl = String(result.info.secure_url);
+              if (
+                result.info &&
+                typeof result.info === "object" &&
+                "secure_url" in result.info
+              ) {
+                const imageUrl = String(result.info.secure_url);
 
-    setImage(imageUrl);
-   toast.success("Image uploaded successfully.");
-  }
-}}
+                setImage(imageUrl);
+                toast.success("Image uploaded successfully.");
+              }
+            }}
           >
             {({ open }) => (
               <button
                 type="button"
+                aria-label="Upload profile photo"
                 onClick={() => open()}
-                className="flex flex-col items-center gap-2"
+                className="flex flex-col items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]"
               >
                 <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-[#2A2640]">
                   {user?.image ? (
                     <Image
                       src={image}
-                      alt="Profile"
+                      alt="Profile picture"
                       width={80}
                       height={80}
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <User size={32} className="text-[#7A748F]" />
+                    <User
+                      aria-hidden="true"
+                      size={32}
+                      className="text-[#7A748F]"
+                    />
                   )}
                 </div>
 
-                <span className="rounded-lg bg-[#7C5CFC] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_16px_rgba(124,92,252,0.35)] hover:bg-[#6B4EE8] transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer">Upload Photo</span>
+                <span className="rounded-lg bg-[#7C5CFC] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_16px_rgba(124,92,252,0.35)] hover:bg-[#6B4EE8] transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer">
+                  Upload Photo
+                </span>
               </button>
             )}
           </CldUploadWidget>
@@ -111,32 +118,45 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
         <div className="flex-1 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-xs text-[#7A748F]">
+              <label
+                htmlFor="firstName"
+                className="mb-1.5 block text-xs text-[#7A748F]"
+              >
                 First Name
               </label>
 
               <input
+                id="firstName"
+                aria-label="First name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full rounded-lg border border-white/[0.07] bg-[#2A2640] px-3 py-2.5 text-sm text-white outline-none focus:border-[#7C5CFC] transition-colors"
+                className="w-full rounded-lg border border-white/[0.07] bg-[#2A2640] px-3 py-2.5 text-sm text-white outline-none  focus:border-[#7C5CFC] focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018] transition-colors"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs text-[#7A748F]">
+              <label
+                htmlFor="lastName"
+                className="mb-1.5 block text-xs text-[#7A748F]"
+              >
                 Last Name
               </label>
 
               <input
+                id="lastName"
+                aria-label="Last name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full rounded-lg border border-white/[0.07] bg-[#2A2640] px-3 py-2.5 text-sm text-white outline-none focus:border-[#7C5CFC] transition-colors"
+                className="w-full rounded-lg border border-white/[0.07] bg-[#2A2640] px-3 py-2.5 text-sm text-white outline-none focus:border-[#7C5CFC] focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs text-[#7A748F]">
+            <label
+              htmlFor="username"
+              className="mb-1.5 block text-xs text-[#7A748F]"
+            >
               Username
             </label>
 
@@ -144,6 +164,8 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
               <span className="text-sm text-[#5C5870]">@</span>
 
               <input
+                id="username"
+                aria-label="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="flex-1 bg-transparent text-sm text-white outline-none"
@@ -152,11 +174,16 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs text-[#7A748F]">
+            <label
+              htmlFor="email"
+              className="mb-1.5 block text-xs text-[#7A748F]"
+            >
               Email Address
             </label>
 
             <input
+              id="email"
+              aria-label="Email address"
               value={user?.email ?? ""}
               disabled
               className="w-full rounded-lg border border-white/[0.07] bg-[#2A2640] px-3 py-2.5 text-sm text-white outline-none"
@@ -169,9 +196,11 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
 
           <div className="flex justify-end">
             <button
+              type="button"
+              aria-label="Save profile changes"
               onClick={handleSave}
               disabled={loading}
-              className="rounded-lg bg-[#7C5CFC] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_16px_rgba(124,92,252,0.35)] hover:bg-[#6B4EE8] transition-all active:scale-[0.98] disabled:opacity-50"
+              className="rounded-lg bg-[#7C5CFC] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_16px_rgba(124,92,252,0.35)] transition-all hover:bg-[#6B4EE8] active:scale-[0.98] disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]"
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>

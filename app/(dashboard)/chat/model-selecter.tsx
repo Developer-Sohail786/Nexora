@@ -40,15 +40,19 @@ export default function ModelSelector({
 }: ModelSelectorProps) {
   return (
     <div className="relative">
-      <button
-        type="button"
-        onClick={() => setShowModels((prev) => !prev)}
-        className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#242034] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2A2640]"
-      >
-        <Sparkles
-          size={14}
-          className="text-[#7C5CFC]"
-        />
+    <button
+  type="button"
+  aria-label="Select AI model"
+  aria-haspopup="listbox"
+  aria-expanded={showModels}
+  onClick={() => setShowModels((prev) => !prev)}
+  className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#242034] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2A2640] focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]"
+>
+       <Sparkles
+  aria-hidden="true"
+  size={14}
+  className="text-[#7C5CFC]"
+/>
 
         <div className="flex items-center gap-2">
           <span>{selectedModel.name}</span>
@@ -60,7 +64,7 @@ export default function ModelSelector({
           )}
         </div>
 
-        <ChevronUp
+        <ChevronUp aria-hidden="true"
           size={14}
           className={`text-[#7A748F] transition-transform duration-200 ${
             showModels ? "rotate-180" : ""
@@ -69,15 +73,21 @@ export default function ModelSelector({
       </button>
 
       {showModels && (
-        <div className="absolute bottom-full left-0 z-50 mb-2 w-56 overflow-hidden rounded-xl border border-white/10 bg-[#1C1926] shadow-xl">
+        <div
+  role="listbox"
+  className="absolute bottom-full left-0 z-50 mb-2 w-56 overflow-hidden rounded-xl border border-white/10 bg-[#1C1926] shadow-xl"
+>
           {models.map((model) => {
             const premium =
               isPremiumModel(model.id);
 
             return (
-              <button
-                key={model.id}
-                type="button"
+             <button
+  key={model.id}
+  type="button"
+  role="option"
+  aria-selected={selectedModel.id === model.id}
+  aria-label={`${model.name}${premium ? " Pro model" : ""}`}
                 onClick={() => {
                   if (
                     premium &&
@@ -105,7 +115,7 @@ export default function ModelSelector({
               >
                 <div className="flex items-center gap-2">
                   {premium && (
-                    <Lock
+                    <Lock aria-hidden="true"
                       size={12}
                       className="text-[#FACC15]"
                     />
@@ -123,7 +133,7 @@ export default function ModelSelector({
 
                   {selectedModel.id ===
                     model.id && (
-                    <span>✓</span>
+                    <span aria-hidden="true">✓</span>
                   )}
                 </div>
               </button>

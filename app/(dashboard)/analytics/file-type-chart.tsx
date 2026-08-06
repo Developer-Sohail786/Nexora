@@ -13,14 +13,22 @@ import {
 import { FileTypeUsage } from "./types";
 
 interface Props {
-  data: FileTypeUsage[]
+  data: FileTypeUsage[];
 }
 
-export default function FileTypeChart({data}: Props) {
+export default function FileTypeChart({
+  data,
+}: Props) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#1C1926] p-6">
+    <section
+      aria-labelledby="file-type-chart-heading"
+      className="rounded-2xl border border-white/10 bg-[#1C1926] p-6"
+    >
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-white">
+        <h2
+          id="file-type-chart-heading"
+          className="text-lg font-semibold text-white"
+        >
           File Types
         </h2>
 
@@ -29,7 +37,11 @@ export default function FileTypeChart({data}: Props) {
         </p>
       </div>
 
-      <div className="h-[320px]">
+      <div
+        role="img"
+        aria-label="Bar chart showing distribution of uploaded document types"
+        className="h-[320px]"
+      >
         <ResponsiveContainer
           width="100%"
           height="100%"
