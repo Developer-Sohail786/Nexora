@@ -84,9 +84,7 @@ export function UploadProvider({
       setUploadProgress(80);
 
       if (!res.ok) {
-        toast.error(
-          "Upload failed.",
-        );
+        toast.error("Unable to upload the document. Please try again.");
 
         throw new Error(
           "Upload failed.",
@@ -95,17 +93,13 @@ export function UploadProvider({
 
       setUploadProgress(100);
 
-      toast.success(
-        "File uploaded successfully.",
-      );
+      toast.success("Document uploaded successfully.");
 
       router.refresh();
     } catch (error) {
       console.error(error);
 
-      toast.error(
-        "Failed to upload file.",
-      );
+     toast.error("Unable to upload the document. Please try again.");
     } finally {
       setTimeout(() => {
         cancelUpload();

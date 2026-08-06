@@ -85,19 +85,14 @@ export default function ChatActions({
       );
 
       if (!res.ok) {
-        toast.error(
-          "Failed to rename chat.",
-        );
+        toast.error("Unable to rename the conversation. Please try again.");
 
         throw new Error(
           "Failed to rename chat.",
         );
       }
 
-      toast.success(
-        "Chat renamed.",
-      );
-
+      toast.success("Conversation renamed successfully.");
       setOpenRename(false);
 
       router.refresh();
@@ -120,18 +115,14 @@ export default function ChatActions({
       );
 
       if (!res.ok) {
-        toast.error(
-          "Failed to delete chat.",
-        );
+      toast.error("Unable to delete the conversation. Please try again.");
 
         throw new Error(
           "Failed to delete chat.",
         );
       }
 
-      toast.success(
-        "Chat deleted.",
-      );
+      toast.success("Conversation deleted successfully.");
 
       router.refresh();
     } catch (error) {

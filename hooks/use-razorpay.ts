@@ -99,17 +99,15 @@ export function useRazorpay() {
               const error =
                 await verify.json();
 
-              toast.error(
-                error.message ??
-                  "Payment verification failed.",
-              );
+             toast.error(
+  error.message ??
+    "Unable to verify your payment. Please try again.",
+);
 
               return;
             }
 
-            toast.success(
-              "Payment Successful",
-            );
+            toast.success("Payment completed successfully.");
 
             router.refresh();
           },
@@ -124,10 +122,10 @@ export function useRazorpay() {
       console.error(error);
 
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Checkout failed.",
-      );
+  error instanceof Error
+    ? error.message
+    : "Unable to start the checkout process. Please try again.",
+);
     }
   };
 

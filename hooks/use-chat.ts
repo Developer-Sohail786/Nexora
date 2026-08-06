@@ -95,7 +95,7 @@ const handleSend = async (
     stopStreamingRef.current = false;
 
     if (selectedModel.id === AI_MODELS.DEEPSEEK.CHAT) {
-      toast.error("DeepSeek requires API credits.");
+     toast.error("DeepSeek is currently unavailable. Please choose another AI model.");
       return;
     }
 
@@ -252,11 +252,11 @@ const handleSend = async (
     if (!(error instanceof Error) || error.name !== "AbortError") {
       console.error(error);
 
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Failed to send message.",
-      );
+     toast.error(
+  error instanceof Error
+    ? error.message
+    : "Unable to send your message. Please try again.",
+);
     }
   } finally {
     abortControllerRef.current = null;

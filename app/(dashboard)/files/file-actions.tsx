@@ -46,17 +46,17 @@ export default function FileActions({ file }: FileActionsProps) {
       });
 
       if (!res.ok) {
-        toast.error("Failed to delete file.");
+       toast.error("Unable to delete the document. Please try again.");
         throw new Error("Failed to delete file.");
       }
 
-      toast.success("File deleted successfully.");
+    toast.success("Document deleted successfully.");
 
       router.refresh();
     } catch (error) {
       console.error(error);
 
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsDeleting(false);
     }

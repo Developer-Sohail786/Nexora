@@ -48,14 +48,14 @@ const router = useRouter();
       const result = await res.json();
 
       if (!res.ok) {
-        toast.error(result.message);
+        toast.error(result.message || "Request failed. Please try again.");
         return;
       }
-      toast.success(result.message);
+     toast.success(result.message || "Account created successfully. Welcome to Nexora!");
       router.push("/dashboard");
       
     } catch{
-      toast.error("Something went wrong");
+      toast.error("Something went wrong. Please try again.");
     }
   };
   useEffect(() => {

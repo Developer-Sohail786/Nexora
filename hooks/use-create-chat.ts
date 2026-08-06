@@ -14,7 +14,7 @@ export function useCreateChat(){
             })
 
             if(!res.ok) {
-                toast.error("Failed to create chat")
+               toast.error("Unable to create a new conversation. Please try again.");
                 return
             }
 
@@ -22,7 +22,7 @@ export function useCreateChat(){
             router.push(`/chat/${chat.id}`)
         } catch (error) {
             console.error(error);
-            toast.error("Something went wrong")
+            toast.error("Something went wrong. Please try again.");
             
         }
     }

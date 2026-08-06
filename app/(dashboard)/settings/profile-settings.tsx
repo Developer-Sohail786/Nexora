@@ -49,9 +49,9 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
         throw new Error(data.message);
       }
 
-      toast.success("Profile updated successfully");
+     toast.success("Your profile has been updated.");
     } catch {
-      toast.error("Failed to update profile");
+      toast.error("Unable to update your profile. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -76,7 +76,7 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
     const imageUrl = String(result.info.secure_url);
 
     setImage(imageUrl);
-    toast.success("Image uploaded successfully");
+   toast.success("Image uploaded successfully.");
   }
 }}
           >

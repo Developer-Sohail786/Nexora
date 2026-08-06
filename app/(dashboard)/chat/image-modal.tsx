@@ -59,7 +59,7 @@ export default function ImageModal({
     link.click();
     document.body.removeChild(link);
 
-    toast.success("Image downloaded successfully!");
+   toast.success("Image downloaded successfully.");
   }
 
   async function handleCopy() {
@@ -74,15 +74,14 @@ export default function ImageModal({
       ]);
 
       setCopied(true);
-      toast.success("Image copied to clipboard!");
+      toast.success("Image copied to clipboard.");
 
       setTimeout(() => {
         setCopied(false);
       }, 2000);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to copy image.");
-    }
+toast.error("Unable to copy the image. Please try again.");    }
   }
 
   return (
