@@ -4,9 +4,27 @@ import { ZodError } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { signupSchema } from "@/lib/validations/auth.schema";
+import { rateLimits } from "@/lib/rateLimit";
 
 export async function POST(req: Request) {
   try {
+
+    const ip= req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? "127.0.0.1";
+
+    const {success}= await rateLimits.register.limit(ip)
+
+    if (!success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Too many registration attempts. Please try again later.",
+        },
+        {
+          status: 429,
+        },
+      );
+    }
     const {
       name,
       email,

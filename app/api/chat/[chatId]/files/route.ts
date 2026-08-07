@@ -7,6 +7,7 @@ import { canUploadFile } from "@/services/subscription/subscription.service";
 import { NextRequest, NextResponse } from "next/server";
 import { Readable } from "stream";
 import type { UploadApiResponse } from "cloudinary";
+import { rateLimits } from "@/lib/rateLimit";
 
 export async function POST(
   req: NextRequest,
@@ -14,6 +15,25 @@ export async function POST(
 ) {
   try {
     const session = await auth();
+    const ip =
+  req.headers.get("x-forwarded-for") ??
+  req.headers.get("x-real-ip") ??
+  "127.0.0.1";
+
+const { success } =
+  await rateLimits.upload.limit(ip);
+
+if (!success) {
+  return NextResponse.json(
+    {
+      message:
+        "Too many file uploads. Please try again later.",
+    },
+    {
+      status: 429,
+    },
+  );
+}
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -33,6 +53,38 @@ export async function POST(
     }
 
     const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+
+    const ALLOWED_FILE_TYPES = [
+  "pdf",
+  "docx",
+  "txt",
+];
+
+if (!ALLOWED_FILE_TYPES.includes(extension)) {
+  return NextResponse.json(
+    {
+      message:
+        "Unsupported file type.",
+    },
+    {
+      status: 400,
+    },
+  );
+}
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+if (file.size > MAX_FILE_SIZE) {
+  return NextResponse.json(
+    {
+      message:
+        "File size exceeds 10MB.",
+    },
+    {
+      status: 400,
+    },
+  );
+}
 
     const arrayBuffer = await file.arrayBuffer();
     const fileBuffer = Buffer.from(arrayBuffer);

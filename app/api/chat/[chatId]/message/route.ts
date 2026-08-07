@@ -23,6 +23,8 @@ import {
 } from "@/services/subscription/subscription.service";
 
 import { isSearchPrompt } from "@/lib/utils/is-search-prompt";
+import { rateLimits } from "@/lib/rateLimit";
+
 
 export async function POST(
   req: NextRequest,
@@ -31,6 +33,25 @@ export async function POST(
   
   try {
     const session = await auth();
+    const ip =
+  req.headers.get("x-forwarded-for") ??
+  req.headers.get("x-real-ip") ??
+  "127.0.0.1";
+
+const { success } =
+  await rateLimits.chat.limit(ip);
+
+if (!success) {
+  return NextResponse.json(
+    {
+      message:
+        "Too many messages. Please wait a moment before trying again.",
+    },
+    {
+      status: 429,
+    },
+  );
+}
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
