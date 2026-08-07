@@ -1,5 +1,5 @@
-import { isSearchPrompt } from "@/lib/utils/is-search-prompt";
 import { isImagePrompt } from "@/lib/utils/is-image-prompt";
+import { isSearchPrompt } from "@/lib/utils/is-search-prompt";
 
 import { streamResponse } from ".";
 import { AIModel } from "./types";
@@ -49,14 +49,17 @@ export async function routerAIRequest({
     throw new Error("No messages found.");
   }
 
+  const prompt = lastMessage.content;
+
   // IMAGE
   if (
     forceImage ||
-    isImagePrompt(lastMessage.content)
+    isImagePrompt(prompt)
   ) {
-    const image = await generateImage({
-      prompt: lastMessage.content,
-    });
+    const image =
+      await generateImage({
+        prompt,
+      });
 
     return {
       type: "image",
@@ -65,35 +68,38 @@ export async function routerAIRequest({
     };
   }
 
-  // SEARCH
-  const searchedMessages =
-    isSearchPrompt(lastMessage.content)
-      ? await webSearch(messages)
-      : messages;
+  const [
+    searchedMessages,
+    chunks,
+  ] = await Promise.all([
+    isSearchPrompt(prompt)
+      ? webSearch(messages)
+      : Promise.resolve(messages),
 
-  // RAG
-  const chunks = await retrieve({
-    query: lastMessage.content,
-    userId,
-    chatId,
-  });
+    retrieve({
+      query: prompt,
+      userId,
+      chatId,
+    }),
+  ]);
 
-  // Prompt Builder
-  const finalMessages = buildPrompt({
-    messages: searchedMessages,
-    context: chunks.map(
-      (chunk) => chunk.content,
-    ),
-  });
+  const finalMessages =
+    buildPrompt({
+      messages: searchedMessages,
+      context: chunks.map(
+        (chunk) => chunk.content,
+      ),
+    });
 
-  // LLM
-  const result = await streamResponse({
-    model,
-    messages: finalMessages,
-  });
+  const result =
+    await streamResponse({
+      model,
+      messages: finalMessages,
+    });
 
   return {
     type: "text",
-    textStream: result.textStream,
+    textStream:
+      result.textStream,
   };
 }

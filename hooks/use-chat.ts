@@ -88,25 +88,37 @@ const handleSend = async (
 
   if (!userInput.trim() || isSending) return;
 
-  const currentEditingMessageId = editingMessageId;
+  const currentEditingMessageId =
+    editingMessageId;
 
   try {
     setIsSending(true);
     stopStreamingRef.current = false;
 
-    if (selectedModel.id === AI_MODELS.DEEPSEEK.CHAT) {
-     toast.error("DeepSeek is currently unavailable. Please choose another AI model.");
+    if (
+      selectedModel.id ===
+      AI_MODELS.DEEPSEEK.CHAT
+    ) {
+      toast.error(
+        "DeepSeek is currently unavailable. Please choose another AI model.",
+      );
       return;
     }
 
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
+    const controller =
+      new AbortController();
+
+    abortControllerRef.current =
+      controller;
 
     // Edit & Resend
     if (currentEditingMessageId) {
-      const editIndex = chatMessages.findIndex(
-        (msg) => msg.id === currentEditingMessageId,
-      );
+      const editIndex =
+        chatMessages.findIndex(
+          (msg) =>
+            msg.id ===
+            currentEditingMessageId,
+        );
 
       if (editIndex !== -1) {
         setChatMessages((prev) => {
@@ -118,124 +130,160 @@ const handleSend = async (
             attachments: uploadedFiles,
           };
 
-          return updated.slice(0, editIndex + 1);
+          return updated.slice(
+            0,
+            editIndex + 1,
+          );
         });
       }
     }
 
     // Normal Send
     else if (!regenerate) {
-    const userMessage: ChatMessageData = {
-  id: crypto.randomUUID(),
-  chatId,
-  role: "user",
-  type: "TEXT",
-  content: userInput,
-  imageUrl: null,
-  model: null,
-  attachments: uploadedFiles,
-  createdAt: new Date(),
-};
+      const userMessage: ChatMessageData =
+        {
+          id: crypto.randomUUID(),
+          chatId,
+          role: "user",
+          type: "TEXT",
+          content: userInput,
+          imageUrl: null,
+          model: null,
+          attachments: uploadedFiles,
+          createdAt: new Date(),
+        };
 
-      setChatMessages((prev) => [...prev, userMessage]);
+      setChatMessages((prev) => [
+        ...prev,
+        userMessage,
+      ]);
     }
 
     setInputValue("");
 
- const aiMessage: ChatMessageData = {
-  id: crypto.randomUUID(),
-  chatId,
-  role: "ai",
-  type: "TEXT",
-  content: "Thinking....",
-  imageUrl: null,
-  model: selectedModel.id,
-  attachments: [],
-  createdAt: new Date(),
-};
-    setChatMessages((prev) => [...prev, aiMessage]);
+    const aiMessage: ChatMessageData = {
+      id: crypto.randomUUID(),
+      chatId,
+      role: "ai",
+      type: "TEXT",
+      content: "Thinking....",
+      imageUrl: null,
+      model: selectedModel.id,
+      attachments: [],
+      createdAt: new Date(),
+    };
 
-    setStreamingMessageId(aiMessage.id);
+    setChatMessages((prev) => [
+      ...prev,
+      aiMessage,
+    ]);
 
-    const response = await fetch(`/api/chat/${chatId}/message`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      signal: controller.signal,
-      body: JSON.stringify({
-        content: userInput,
-        model: selectedModel.id,
-        files: uploadedFiles,
-        forceImage,
-        ...(currentEditingMessageId && {
-          editingMessageId: currentEditingMessageId,
+    setStreamingMessageId(
+      aiMessage.id,
+    );
+
+    const response = await fetch(
+      `/api/chat/${chatId}/message`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          content: userInput,
+          model: selectedModel.id,
+          files: uploadedFiles,
+          forceImage,
+          ...(currentEditingMessageId && {
+            editingMessageId:
+              currentEditingMessageId,
+          }),
         }),
-      }),
-    });
+      },
+    );
 
     if (!response.ok) {
-      const error = await response.json();
+      const error =
+        await response.json();
 
       setChatMessages((prev) =>
-        prev.filter((msg) => msg.id !== aiMessage.id),
+        prev.filter(
+          (msg) =>
+            msg.id !== aiMessage.id,
+        ),
       );
 
-      throw new Error(error.message ?? "Something went wrong.");
+      throw new Error(
+        error.message ??
+          "Something went wrong.",
+      );
     }
 
     if (currentEditingMessageId) {
       setEditingMessageId(null);
     }
 
-    const contentType = response.headers.get("content-type") ?? "";
+    const contentType =
+      response.headers.get(
+        "content-type",
+      ) ?? "";
 
     // IMAGE RESPONSE
-    if (contentType.includes("application/json")) {
-      const result = await response.json();
+    if (
+      contentType.includes(
+        "application/json",
+      )
+    ) {
+      const result =
+        await response.json();
 
       if (result.type === "image") {
-        
-        
-  setChatMessages((prev) =>
-    prev.map((msg) =>
-      msg.id === aiMessage.id
-        ? {
-            ...msg,
-            type: "IMAGE",
-            content: "",
-            imageUrl: result.imageUrl,
-          }
-        : msg,
-    ),
-  );
+        setChatMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === aiMessage.id
+              ? {
+                  ...msg,
+                  type: "IMAGE",
+                  content: "",
+                  imageUrl:
+                    result.imageUrl,
+                }
+              : msg,
+          ),
+        );
 
-  return;
-}
+        return;
+      }
     }
 
     // TEXT STREAM RESPONSE
     if (!response.body) {
-      throw new Error("No response stream.");
+      throw new Error(
+        "No response stream.",
+      );
     }
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
+    const reader =
+      response.body.getReader();
+
+    const decoder =
+      new TextDecoder();
 
     let aiText = "";
+    let pendingText = "";
 
-    while (true) {
-      if (stopStreamingRef.current) break;
+    let flushTimeout: ReturnType<
+      typeof setTimeout
+    > | null = null;
 
-      const { done, value } = await reader.read();
+    const flush = () => {
+      const text = pendingText;
 
-      if (done) break;
+      pendingText = "";
 
-      const chunk = decoder.decode(value, {
-        stream: true,
-      });
-
-      aiText += chunk;
+      aiText += text;
 
       setChatMessages((prev) =>
         prev.map((msg) =>
@@ -247,23 +295,75 @@ const handleSend = async (
             : msg,
         ),
       );
+
+      flushTimeout = null;
+    };
+
+    while (true) {
+      if (
+        stopStreamingRef.current
+      )
+        break;
+
+      const {
+        done,
+        value,
+      } = await reader.read();
+
+      if (done) break;
+
+      const chunk =
+        decoder.decode(value, {
+          stream: true,
+        });
+
+      pendingText += chunk;
+
+      if (!flushTimeout) {
+        flushTimeout =
+          setTimeout(
+            flush,
+            30,
+          );
+      }
+    }
+
+    if (flushTimeout) {
+      clearTimeout(flushTimeout);
+    }
+
+    if (pendingText.length > 0) {
+      flush();
     }
   } catch (error) {
-    if (!(error instanceof Error) || error.name !== "AbortError") {
+    if (
+      !(
+        error instanceof Error
+      ) ||
+      error.name !==
+        "AbortError"
+    ) {
       console.error(error);
 
-     toast.error(
-  error instanceof Error
-    ? error.message
-    : "Unable to send your message. Please try again.",
-);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Unable to send your message. Please try again.",
+      );
     }
   } finally {
-    abortControllerRef.current = null;
-    stopStreamingRef.current = false;
+    abortControllerRef.current =
+      null;
+
+    stopStreamingRef.current =
+      false;
 
     setIsSending(false);
-    setStreamingMessageId(null);
+
+    setStreamingMessageId(
+      null,
+    );
+
     setUploadedFiles([]);
   }
 };

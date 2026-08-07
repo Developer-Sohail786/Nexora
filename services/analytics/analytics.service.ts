@@ -10,46 +10,48 @@ import {
 export async function getAnalytics(
   userId: string,
 ) {
- 
-  // Cards
- 
-
-  const totalChats =
-    await prisma.chat.count({
+  const [
+    totalChats,
+    totalDocuments,
+    totalImages,
+    totalResponses,
+    files,
+    models,
+    chats,
+    recentChats,
+    recentImages,
+  ] = await Promise.all([
+    prisma.chat.count({
       where: {
         userId,
       },
-    });
+    }),
 
-  const totalDocuments =
-    await prisma.file.count({
+    prisma.file.count({
       where: {
         userId,
       },
-    });
+    }),
 
-  const totalImages =
-    await prisma.message.count({
+    prisma.message.count({
       where: {
         chat: {
           userId,
         },
         type: "IMAGE",
       },
-    });
+    }),
 
-  const totalResponses =
-    await prisma.message.count({
+    prisma.message.count({
       where: {
         chat: {
           userId,
         },
         role: "assistant",
       },
-    });
+    }),
 
-  const files =
-    await prisma.file.findMany({
+    prisma.file.findMany({
       where: {
         userId,
       },
@@ -60,20 +62,9 @@ export async function getAnalytics(
         type: true,
         createdAt: true,
       },
-    });
+    }),
 
-  const totalStorage =
-    files.reduce(
-      (
-        total,
-        file,
-      ) =>
-        total + file.size,
-      0,
-    );
-
-  const models =
-    await prisma.message.findMany({
+    prisma.message.findMany({
       where: {
         chat: {
           userId,
@@ -85,85 +76,33 @@ export async function getAnalytics(
       select: {
         model: true,
       },
-    });
+    }),
 
-  const cards = {
-    chats: totalChats,
-
-    documents:
-      totalDocuments,
-
-    images: totalImages,
-
-    responses:
-      totalResponses,
-
-    storage:
-      formatBytes(
-        totalStorage,
-      ),
-
-    models: new Set(
-      models.map(
-        (m) => m.model,
-      ),
-    ).size,
-  };
-
-
-  // Activity
- 
-
-  const chats =
-    await prisma.chat.findMany({
+    prisma.chat.findMany({
       where: {
         userId,
       },
       select: {
         createdAt: true,
       },
-    });
+    }),
 
-  const activity =
-    buildActivityData(
-      chats,
-    );
-
- 
-  // Model Usage
- 
-
-  const modelUsage =
-    buildModelUsage(
-      models,
-    );
-
- 
-    
-  // File Types
-  
-
-  const fileTypes =
-    buildFileTypes(files);
-
- 
-  // Recent Chats
-  
-
-  const recentChats =
-    await prisma.chat.findMany({
+    prisma.chat.findMany({
       where: {
         userId,
       },
       take: 5,
       orderBy: {
-        createdAt:
-          "desc",
+        createdAt: "desc",
       },
-    });
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+      },
+    }),
 
-  const recentImages =
-    await prisma.message.findMany({
+    prisma.message.findMany({
       where: {
         chat: {
           userId,
@@ -172,13 +111,49 @@ export async function getAnalytics(
       },
       take: 5,
       orderBy: {
-        createdAt:
-          "desc",
+        createdAt: "desc",
       },
-    });
-   
-  // Recent Usage
- 
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+      },
+    }),
+  ]);
+
+  const totalStorage = files.reduce(
+    (total, file) => total + file.size,
+    0,
+  );
+
+  const cards = {
+    chats: totalChats,
+
+    documents: totalDocuments,
+
+    images: totalImages,
+
+    responses: totalResponses,
+
+    storage: formatBytes(
+      totalStorage,
+    ),
+
+    models: new Set(
+      models.map(
+        (model) => model.model,
+      ),
+    ).size,
+  };
+
+  const activity =
+    buildActivityData(chats);
+
+  const modelUsage =
+    buildModelUsage(models);
+
+  const fileTypes =
+    buildFileTypes(files);
 
   const activities = [
     ...recentChats.map((chat) => ({
@@ -211,10 +186,6 @@ export async function getAnalytics(
         a.createdAt.getTime(),
     )
     .slice(0, 8);
-
- 
-  // Return
-
 
   return {
     cards,

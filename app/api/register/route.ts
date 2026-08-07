@@ -1,19 +1,27 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { ZodError } from "zod";
 
 import { prisma } from "@/lib/prisma";
+import { signupSchema } from "@/lib/validations/auth.schema";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const {
+      name,
+      email,
+      password,
+    } = signupSchema.parse(await req.json());
 
-    const { email, password } = body;
-
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const existingUser =
+      await prisma.user.findUnique({
+        where: {
+          email,
+        },
+        select: {
+          id: true,
+        },
+      });
 
     if (existingUser) {
       return NextResponse.json(
@@ -27,13 +35,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(
-      password,
-      10,
-    );
+    const hashedPassword =
+      await bcrypt.hash(password, 10);
 
     await prisma.user.create({
       data: {
+        name,
         email,
         password: hashedPassword,
       },
@@ -43,7 +50,23 @@ export async function POST(req: Request) {
       success: true,
       message: "User created successfully",
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            error.issues[0]?.message ??
+            "Invalid request",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    console.error(error);
+
     return NextResponse.json(
       {
         success: false,

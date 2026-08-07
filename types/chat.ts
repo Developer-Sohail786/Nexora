@@ -6,13 +6,14 @@ export type Attachment = {
   url: string;
   type: string;
   size: number;
-  content?:string | null
+  content?: string | null;
 };
 
 export type ChatMessageData = {
   id: string;
   chatId: string;
-  role: string;
+
+  role: "user" | "ai";
 
   type: MessageType;
 

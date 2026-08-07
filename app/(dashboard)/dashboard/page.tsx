@@ -13,43 +13,65 @@ export default async function DashboardPage() {
     where: {
       email: session?.user?.email ?? "",
     },
+    select: {
+      id: true,
+      username: true,
+      name: true,
+    },
   });
 
-  // chats
-  const recentChats = await prisma.chat.findMany({
-    where: {
-      userId: user?.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 5,
-  });
-  // files
-const recentFiles = await prisma.file.findMany({
-  where: {
-    userId: user?.id,
-  },
-  orderBy: {
-    createdAt: "desc",
-  },
-  take: 5,
-});
+  if (!user) {
+    return (
+      <>
+        <DashboardHero name="User" />
 
-  // images
+        <RecentActivity activities={[]} />
 
-  const recentImages = await prisma.message.findMany({
-    where: {
-      chat: {
-        userId: user?.id,
+        <ProcessingFiles />
+
+        <Footer />
+      </>
+    );
+  }
+
+  const [
+    recentChats,
+    recentFiles,
+    recentImages,
+  ] = await Promise.all([
+    prisma.chat.findMany({
+      where: {
+        userId: user.id,
       },
-      type: "IMAGE",
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 5,
-  });
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
+    }),
+
+    prisma.file.findMany({
+      where: {
+        userId: user.id,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
+    }),
+
+    prisma.message.findMany({
+      where: {
+        chat: {
+          userId: user.id,
+        },
+        type: "IMAGE",
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
+    }),
+  ]);
 
   const activities = [
     ...recentChats.map((chat) => ({
@@ -69,20 +91,35 @@ const recentFiles = await prisma.file.findMany({
     ...recentImages.map((image) => ({
       id: image.id,
       type: "image" as const,
-      title: image.content ?? "Generated Image",
+      title:
+        image.content ??
+        "Generated Image",
       createdAt: image.createdAt,
     })),
   ]
-    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .sort(
+      (a, b) =>
+        b.createdAt.getTime() -
+        a.createdAt.getTime(),
+    )
     .slice(0, 6);
 
   return (
     <>
-      <DashboardHero name={user?.username ?? user?.name ?? "User"} />
-     <RecentActivity
-  activities={activities}
-/>
+      <DashboardHero
+        name={
+          user.username ??
+          user.name ??
+          "User"
+        }
+      />
+
+      <RecentActivity
+        activities={activities}
+      />
+
       <ProcessingFiles />
+
       <Footer />
     </>
   );

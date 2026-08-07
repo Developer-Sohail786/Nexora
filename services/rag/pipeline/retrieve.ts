@@ -8,7 +8,6 @@ interface RetrieveParams {
   query: string;
   userId: string;
   topK?: number;
-  chatId: string
 }
 
 export async function retrieve({
@@ -16,7 +15,6 @@ export async function retrieve({
   userId,
   topK = 5,
 }: RetrieveParams): Promise<SearchVectorResult[]> {
-  
   try {
     const { embedding } =
       await generateEmbedding(query);
@@ -26,11 +24,11 @@ export async function retrieve({
         embedding,
         topK,
       );
-   
 
     return results.filter(
       (result) =>
-        result.metadata.userId === userId,
+        result.metadata.userId ===
+        userId,
     );
   } catch (error) {
     console.warn(

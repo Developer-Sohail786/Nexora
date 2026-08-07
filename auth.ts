@@ -28,24 +28,36 @@ export const {
       },
 
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (
+          !credentials?.email ||
+          !credentials?.password
+        ) {
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email as string,
-          },
-        });
+        const user =
+          await prisma.user.findUnique({
+            where: {
+              email:
+                credentials.email as string,
+            },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              password: true,
+            },
+          });
 
         if (!user || !user.password) {
           return null;
         }
 
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password as string,
-          user.password,
-        );
+        const isPasswordValid =
+          await bcrypt.compare(
+            credentials.password as string,
+            user.password,
+          );
 
         if (!isPasswordValid) {
           return null;
