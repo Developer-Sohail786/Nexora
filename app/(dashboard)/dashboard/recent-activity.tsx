@@ -1,9 +1,18 @@
 "use client";
 
+import { motion } from "framer-motion";
+
+import {
+  slideUpVariants,
+  listVariants,
+  itemVariants,
+} from "@/lib/animations";
+
 import {
   MessageSquare,
   FileText,
   Image as ImageIcon,
+  Activity as ActivityIcon,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -13,7 +22,6 @@ import { formatDistanceToNow } from "date-fns";
 import type { Activity } from "./types";
 
 import EmptyState from "@/components/ui/empty-state";
-import { Activity as ActivityIcon } from "lucide-react";
 
 interface RecentActivityProps {
   activities: Activity[];
@@ -64,28 +72,50 @@ export default function RecentActivity({
   }
 
   return (
-    <section className="bg-[#111018] px-6">
+    <motion.section
+      variants={slideUpVariants}
+      initial="hidden"
+      animate="visible"
+      className="bg-[#111018] px-6"
+    >
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-white">
           Recent Activity
         </h2>
 
-        <Link href="/files" className="text-sm text-[#7C5CFC] hover:underline">
+        <Link
+          href="/files"
+          className="text-sm text-[#7C5CFC] hover:underline"
+        >
           View All
         </Link>
       </div>
 
       {activities.length === 0 ? (
-  <EmptyState
-  icon={<ActivityIcon className="h-8 w-8 text-[#7C5CFC]" />}
-  title="No recent activity"
-  description="Your chats, uploaded files, and generated images will appear here as you use Nexora."
-/>
+        <EmptyState
+          icon={
+            <ActivityIcon className="h-8 w-8 text-[#7C5CFC]" />
+          }
+          title="No recent activity"
+          description="Your chats, uploaded files, and generated images will appear here as you use Nexora."
+        />
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <motion.div
+          variants={listVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+        >
           {activities.map((activity) => (
-            <div
+            <motion.div
               key={activity.id}
+              variants={itemVariants}
+              whileHover={{
+                y: -3,
+                transition: {
+                  duration: 0.2,
+                },
+              }}
               className="rounded-xl border border-white/[0.07] bg-[#1C1926] p-4 transition-all hover:border-white/15 hover:bg-[#222030]"
             >
               <div className="mb-3 flex items-center justify-between">
@@ -110,10 +140,10 @@ export default function RecentActivity({
               <h3 className="truncate text-sm font-semibold text-white">
                 {activity.title}
               </h3>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-    </section>
+    </motion.section>
   );
 }

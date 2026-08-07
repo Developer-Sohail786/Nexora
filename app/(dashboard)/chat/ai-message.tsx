@@ -1,11 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import Image from "next/image";
-import { Copy, Check, RotateCcw } from "lucide-react";
+import {
+  Copy,
+  Check,
+  RotateCcw,
+} from "lucide-react";
 import type { MessageType } from "@prisma/client";
-import ImageModal from "./image-modal";
 
+import ImageModal from "./image-modal";
 import MessageContent from "./message-content";
 
 interface AIMessageProps {
@@ -27,47 +32,97 @@ export default function AIMessage({
   isStreaming,
   onRegenerate,
 }: AIMessageProps) {
-  const [copied, setCopied] = useState(false);
-  const [isModalOpen, setIsModalOpen]= useState(false)
+  const [copied, setCopied] =
+    useState(false);
 
-  const modelNames: Record<string, string> = {
+  const [isModalOpen, setIsModalOpen] =
+    useState(false);
+
+  const modelNames: Record<
+    string,
+    string
+  > = {
     "gemini-2.5-flash": "Gemini",
     "deepseek-chat": "DeepSeek",
-    "llama-3.3-70b-versatile": "Llama 3.3",
+    "llama-3.3-70b-versatile":
+      "Llama 3.3",
     "qwen/qwen3-32b": "Qwen 3",
     "command-a-03-2025": "Cohere",
   };
 
   const cleanContent =
-  type === "TEXT"
-    ? (content ?? "")
-        .replace(/<think>[\s\S]*?<\/think>/g, "")
-        .trim()
-    : "";
+    type === "TEXT"
+      ? (content ?? "")
+          .replace(
+            /<think>[\s\S]*?<\/think>/g,
+            "",
+          )
+          .trim()
+      : "";
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(cleanContent);
+    await navigator.clipboard.writeText(
+      cleanContent,
+    );
 
     setCopied(true);
 
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(
+      () => setCopied(false),
+      2000,
+    );
   }
 
   return (
-    <div className="flex gap-3">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7C5CFC] text-xs font-bold text-white">
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 12,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        duration: 0.25,
+      }}
+      className="flex gap-3"
+    >
+      <motion.div
+        initial={{
+          scale: 0.9,
+        }}
+        animate={{
+          scale: 1,
+        }}
+        transition={{
+          duration: 0.2,
+        }}
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#7C5CFC] text-xs font-bold text-white"
+      >
         AI
-      </div>
+      </motion.div>
 
-      <div className="flex-1">
+      <div className="group flex-1">
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-xs font-semibold text-[#7C5CFC]">Nexus AI</p>
+          <p className="text-xs font-semibold text-[#7C5CFC]">
+            Nexus AI
+          </p>
 
-          {cleanContent !== "Thinking...." && (
-            <div className="flex items-center gap-3">
+          {cleanContent !==
+            "Thinking...." && (
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              whileHover={{
+                opacity: 1,
+              }}
+              className="flex items-center gap-3 opacity-70 transition-opacity group-hover:opacity-100"
+            >
               <button
                 onClick={handleCopy}
-                className="  flex cursor-pointer items-center gap-1 text-xs text-[#7A748F] transition hover:text-white"
+                className="flex cursor-pointer items-center gap-1 text-xs text-[#7A748F] transition hover:text-white"
               >
                 {copied ? (
                   <>
@@ -83,53 +138,86 @@ export default function AIMessage({
               </button>
 
               <button
-                onClick={() => onRegenerate?.(id)}
+                onClick={() =>
+                  onRegenerate?.(id)
+                }
                 className="flex cursor-pointer items-center gap-1 text-xs text-[#7A748F] transition hover:text-white"
               >
                 <RotateCcw size={14} />
                 Regenerate
               </button>
-            </div>
+            </motion.div>
           )}
         </div>
 
         {model && (
           <p className="mb-2 mt-1 text-[11px] text-[#7A748F]">
-            {modelNames[model] ?? model}
+            {modelNames[model] ??
+              model}
           </p>
         )}
 
         {type === "IMAGE" ? (
-      <div className="mt-3 w-fit max-w-full overflow-hidden rounded-xl border border-[#2B2B35]">
-  {imageUrl && (
-    <>
-   <Image
-  src={imageUrl}
-  alt="Generated image"
-  width={512}
-  height={512}
-  unoptimized
-  onClick={() => setIsModalOpen(true)}
-  className="h-auto max-h-105 w-full max-w-lg cursor-pointer rounded-xl object-contain transition hover:opacity-90"
-/>
+          <motion.div
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            transition={{
+              duration: 0.35,
+            }}
+            className="mt-3 w-fit max-w-full overflow-hidden rounded-xl border border-[#2B2B35]"
+          >
+            {imageUrl && (
+              <>
+                <Image
+                  src={imageUrl}
+                  alt="Generated image"
+                  width={512}
+                  height={512}
+                  unoptimized
+                  onClick={() =>
+                    setIsModalOpen(
+                      true,
+                    )
+                  }
+                  className="h-auto max-h-105 w-full max-w-lg cursor-pointer rounded-xl object-contain transition hover:opacity-90"
+                />
 
-    <ImageModal
-    open={isModalOpen}
-    imageUrl={imageUrl}
-    onClose={()=> setIsModalOpen(false)}
-    onRegenrate={()=> onRegenerate?.(id)}
-    />
-    </>
-  )}
-</div>
+                <ImageModal
+                  open={
+                    isModalOpen
+                  }
+                  imageUrl={
+                    imageUrl
+                  }
+                  onClose={() =>
+                    setIsModalOpen(
+                      false,
+                    )
+                  }
+                  onRegenrate={() =>
+                    onRegenerate?.(
+                      id,
+                    )
+                  }
+                />
+              </>
+            )}
+          </motion.div>
         ) : (
           <MessageContent
             content={cleanContent}
-            isStreaming={isStreaming && cleanContent !== "Thinking...."}
+            isStreaming={
+              isStreaming &&
+              cleanContent !==
+                "Thinking...."
+            }
           />
         )}
       </div>
-    </div>
-    
+    </motion.div>
   );
 }

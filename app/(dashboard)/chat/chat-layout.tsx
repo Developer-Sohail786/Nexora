@@ -2,16 +2,30 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import {
+  AnimatePresence,
+  motion,
+} from "framer-motion";
+
 import ChatInput from "./chat-input";
 import ChatMessage from "./chat-message";
 
 import { useChat } from "@/hooks/use-chat";
 
-import type { ChatMessageData, Attachment } from "@/types/chat";
-import { AI_MODELS } from "@/services/ai/types";
-import type { AIModel } from "@/services/ai/types";
+import type {
+  ChatMessageData,
+  Attachment,
+} from "@/types/chat";
+
+import {
+  AI_MODELS,
+  type AIModel,
+} from "@/services/ai/types";
+
+import { listVariants } from "@/lib/animations";
 
 import EmptyState from "@/components/ui/empty-state";
+
 import { MessageCircle } from "lucide-react";
 
 export type ModelOption = {
@@ -53,9 +67,11 @@ export default function ChatLayout({
   userImage,
   isPro,
 }: ChatLayoutProps) {
-  const [selectedModel, setSelectedModel] = useState<ModelOption>(MODELS[0]);
+  const [selectedModel, setSelectedModel] =
+    useState<ModelOption>(MODELS[0]);
 
-  const [showModels, setShowModels] = useState(false);
+  const [showModels, setShowModels] =
+    useState(false);
 
   const {
     chatMessages,
@@ -75,7 +91,8 @@ export default function ChatLayout({
     selectedModel,
   });
 
-  const messageEndRef = useRef<HTMLDivElement>(null);
+  const messageEndRef =
+    useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({
@@ -87,42 +104,65 @@ export default function ChatLayout({
     <div className="flex h-full bg-[#111018] text-white">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <main className="min-h-0 flex-1 overflow-y-auto">
-          <div className="flex flex-col gap-6 px-6 py-6">
+          <motion.div
+            variants={listVariants}
+            initial="hidden"
+            animate="visible"
+            layout
+            className="flex flex-col gap-6 px-6 py-6"
+          >
             {chatMessages.length === 0 ? (
               <div className="flex h-full items-center justify-center py-20">
                 <EmptyState
-                  icon={<MessageCircle className="h-8 w-8 text-[#7C5CFC]" />}
+                  icon={
+                    <MessageCircle className="h-8 w-8 text-[#7C5CFC]" />
+                  }
                   title="Welcome to Nexora"
                   description="Ask questions, upload documents, search the web, or generate AI images to get started."
                 />
               </div>
             ) : (
-              chatMessages.map((message) => {
-                return (
+              <AnimatePresence mode="popLayout">
+                {chatMessages.map((message) => (
                   <ChatMessage
                     key={message.id}
                     id={message.id}
-                    role={message.role as "user" | "ai"}
+                    role={
+                      message.role as
+                        | "user"
+                        | "ai"
+                    }
                     type={message.type}
-                    content={message.content ?? ""}
-                    imageUrl={message.imageUrl}
+                    content={
+                      message.content ?? ""
+                    }
+                    imageUrl={
+                      message.imageUrl
+                    }
                     model={message.model}
                     attachments={
-                      Array.isArray(message.attachments)
+                      Array.isArray(
+                        message.attachments,
+                      )
                         ? (message.attachments as Attachment[])
                         : []
                     }
                     userImage={userImage}
-                    isStreaming={message.id === streamingMessageId}
+                    isStreaming={
+                      message.id ===
+                      streamingMessageId
+                    }
                     onEdit={handleEdit}
-                    onRegenerate={handleRegenerate}
+                    onRegenerate={
+                      handleRegenerate
+                    }
                   />
-                );
-              })
+                ))}
+              </AnimatePresence>
             )}
 
             <div ref={messageEndRef} />
-          </div>
+          </motion.div>
         </main>
 
         <div className="shrink-0 border-t border-white/6 px-6 py-4">
@@ -135,9 +175,13 @@ export default function ChatLayout({
             handleStop={handleStop}
             models={MODELS}
             selectedModel={selectedModel}
-            setSelectedModel={setSelectedModel}
+            setSelectedModel={
+              setSelectedModel
+            }
             showModels={showModels}
-            setShowModels={setShowModels}
+            setShowModels={
+              setShowModels
+            }
             uploadedFiles={uploadedFiles}
             uploadFile={uploadFile}
             removeFile={removeFile}
