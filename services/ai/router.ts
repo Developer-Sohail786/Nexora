@@ -79,7 +79,6 @@ export async function routerAIRequest({
     retrieve({
       query: prompt,
       userId,
-      chatId,
     }),
   ]);
 
