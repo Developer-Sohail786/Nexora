@@ -237,7 +237,7 @@ export default function ChatInput({
           onClick={() => {
             if (!isPro) {
               toast.info(
-                "Web Search is available with Nexus Pro.",
+                "Web Search is available with Nexora Pro.",
               );
               return;
             }

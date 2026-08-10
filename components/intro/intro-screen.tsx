@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const steps = ["WELCOME", "TO", "NEXUS AI"];
+const steps = ["WELCOME", "TO", "Nexora AI"];
 
 export default function IntroScreen({ onComplete }: { onComplete?: () => void }) {
   const [step, setStep] = useState(0);

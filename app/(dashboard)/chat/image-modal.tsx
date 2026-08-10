@@ -53,7 +53,7 @@ export default function ImageModal({
     const link = document.createElement("a");
 
     link.href = imageUrl;
-    link.download = `nexus-ai-${Date.now()}.png`;
+    link.download = `nexora-ai-${Date.now()}.png`;
 
     document.body.appendChild(link);
     link.click();

@@ -118,7 +118,7 @@ ${fileContext}`;
 
  if (!canUseModel(user, model)) {
       return NextResponse.json(
-        { message: "This AI model is avaliable only with Nexus Pro" },
+        { message: "This AI model is avaliable only with Nexora Pro" },
         { status: 403 },
       );
     }
@@ -127,7 +127,7 @@ ${fileContext}`;
       return NextResponse.json(
         {
           message:
-            "You've used today's free image generation. Upgrade to Nexus Pro for unlimited image generation.",
+            "You've used today's free image generation. Upgrade to Nexora Pro for unlimited image generation.",
         },
         {
           status: 403,
@@ -138,7 +138,7 @@ ${fileContext}`;
      if (isSearchPrompt(finalPrompt) && !canUseWebSearch(user)) {
       return NextResponse.json(
         {
-          message: "Web Search is available only with Nexus Pro.",
+          message: "Web Search is available only with Nexora Pro.",
         },
         {
           status: 403,
@@ -149,7 +149,7 @@ ${fileContext}`;
       return NextResponse.json(
         {
           message:
-            "You've reached today's free chat limit. Upgrade to Nexus Pro.",
+            "You've reached today's free chat limit. Upgrade to Nexora Pro.",
         },
         {
           status: 403,

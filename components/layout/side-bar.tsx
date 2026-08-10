@@ -53,7 +53,7 @@ export default function Sidebar({ chats }: { chats: Chat[] }) {
         </div>
         <div className="min-w-0 leading-tight">
           <p className="text-sm font-semibold text-[#a796e9]">
-            Nexus Workspace
+            Nexora Workspace
           </p>
           <p className="text-[10px] text-[#7A748F]">AI-Powered Productivity</p>
         </div>

@@ -94,7 +94,7 @@ export default function ModelSelector({
                     !isPro
                   ) {
                     toast.info(
-                      "Upgrade to Nexus Pro to use this AI model.",
+                      "Upgrade to Nexora Pro to use this AI model.",
                     );
                     return;
                   }

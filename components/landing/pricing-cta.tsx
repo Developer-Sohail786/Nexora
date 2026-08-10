@@ -16,7 +16,7 @@ export default function PricingCta() {
 
     <p className="mt-3 text-sm leading-relaxed text-[#7A748F]">
       Join the thousands of developers and professionals
-      streamlining their workflow with Nexus AI.
+      streamlining their workflow with Nexora AI.
     </p>
 
     <div className="mt-8 flex flex-col items-center">

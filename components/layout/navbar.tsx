@@ -12,7 +12,7 @@ export default function Navbar() {
     <header className="w-full border-b border-white/6 bg-[#0F0D14] dark:bg-[#0F0D14]">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-8 px-6">
         <span className="text-lg font-bold tracking-tight text-white">
-          Nexus AI
+          Nexora AI
         </span>
 
         {/* <nav className="flex items-center gap-6">

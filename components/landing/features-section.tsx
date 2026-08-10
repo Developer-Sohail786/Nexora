@@ -17,7 +17,7 @@ export default function FeaturesSection() {
         <FeatureCard
           icon={<Search size={18} className="text-[#7A748F]" />}
           title="Semantic Search"
-          description="Find exactly what you need across thousands of documents, codebases, and past chats instantly. Nexus understands context, not just keywords."
+          description="Find exactly what you need across thousands of documents, codebases, and past chats instantly. Nexora understands context, not just keywords."
           preview={
             <div className="rounded-lg border border-white/[0.07] bg-[#17131F] px-3 py-2.5 text-xs text-[#7A748F] font-mono">
               <p className="mb-1">
@@ -36,7 +36,7 @@ export default function FeaturesSection() {
         <FeatureCard
           icon={<FileText size={18} className="text-[#7A748F]" />}
           title="Document Understanding"
-          description="Upload PDFs, Word docs, or spreadsheets. Nexus extracts data, summarizes long reports, and answers specific queries."
+          description="Upload PDFs, Word docs, or spreadsheets. Nexora extracts data, summarizes long reports, and answers specific queries."
           preview={
             <div className="flex gap-2 mt-2">
               <span className="rounded bg-[#2A2640] px-2 py-1 text-[11px] text-[#9490A8]">
@@ -55,7 +55,7 @@ export default function FeaturesSection() {
         <FeatureCard
           icon={<Code2 size={18} className="text-[#7A748F]" />}
           title="Code Assistant"
-          description="Refactor, debug, or write boilerplate. Nexus connects to your local repo to understand your specific architecture."
+          description="Refactor, debug, or write boilerplate. Nexora connects to your local repo to understand your specific architecture."
         />
 
         <FeatureCard

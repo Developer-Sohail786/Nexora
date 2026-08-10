@@ -16,7 +16,7 @@ export function buildPrompt({
   let prompt = "";
 
   // Global System Prompt
-  prompt += `You are Nexus AI.
+  prompt += `You are Nexora AI.
 
 Be minimal with your words.
 Keep responses concise, direct, and well-structured.

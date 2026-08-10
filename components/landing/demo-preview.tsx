@@ -12,7 +12,7 @@ export default function DemoPreview() {
           <div className="h-2.5 w-2.5 rounded-full bg-[#2A2640]" />
           <div className="h-2.5 w-2.5 rounded-full bg-[#2A2640]" />
           <div className="h-2.5 w-2.5 rounded-full bg-[#2A2640]" />
-          <span className="ml-2 text-[11px] text-[#5C5870] uppercase tracking-widest">Nexus AI Workspace – Demo</span>
+          <span className="ml-2 text-[11px] text-[#5C5870] uppercase tracking-widest">Nexora AI Workspace – Demo</span>
         </div>
 
         {/* Messages */}

@@ -106,7 +106,7 @@ export default function AIMessage({
       <div className="group flex-1">
         <div className="mb-2 flex items-center justify-between">
           <p className="text-xs font-semibold text-[#7C5CFC]">
-            Nexus AI
+            Nexora AI
           </p>
 
           {cleanContent !==

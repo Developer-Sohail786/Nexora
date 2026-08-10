@@ -104,7 +104,7 @@ if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         {
           message:
-            "You've reached today's free upload limit. Upgrade to Nexus Pro for unlimited uploads.",
+            "You've reached today's free upload limit. Upgrade to Nexora Pro for unlimited uploads.",
         },
         {
           status: 403,
