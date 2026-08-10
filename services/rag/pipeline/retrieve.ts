@@ -7,12 +7,14 @@ import {
 interface RetrieveParams {
   query: string;
   userId: string;
+  chatId: string;
   topK?: number;
 }
 
 export async function retrieve({
   query,
   userId,
+  chatId,
   topK = 5,
 }: RetrieveParams): Promise<SearchVectorResult[]> {
   try {
