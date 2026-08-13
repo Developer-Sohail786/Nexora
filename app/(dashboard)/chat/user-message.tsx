@@ -72,14 +72,12 @@ export default function UserMessage({
           </p>
 
           {onEdit && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              whileHover={{ opacity: 1 }}
+            <button
               onClick={() => onEdit(id)}
-              className="cursor-pointer text-xs text-[#7A748F] opacity-70 transition hover:text-white group-hover:opacity-100"
+              className="cursor-pointer text-xs text-[#7A748F] opacity-70 transition hover:text-white hover:opacity-100"
             >
               Edit
-            </motion.button>
+            </button>
           )}
         </div>
 

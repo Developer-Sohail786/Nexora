@@ -111,15 +111,7 @@ export default function AIMessage({
 
           {cleanContent !==
             "Thinking...." && (
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              whileHover={{
-                opacity: 1,
-              }}
-              className="flex items-center gap-3 opacity-70 transition-opacity group-hover:opacity-100"
-            >
+            <div className="flex items-center gap-3 opacity-70 transition-opacity hover:opacity-100">
               <button
                 onClick={handleCopy}
                 className="flex cursor-pointer items-center gap-1 text-xs text-[#7A748F] transition hover:text-white"
@@ -146,7 +138,7 @@ export default function AIMessage({
                 <RotateCcw size={14} />
                 Regenerate
               </button>
-            </motion.div>
+            </div>
           )}
         </div>
 
