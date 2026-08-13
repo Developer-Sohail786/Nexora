@@ -16,6 +16,7 @@ export class ChromaVectorRepository implements VectorRepository {
   private async collection() {
     return client.getOrCreateCollection({
       name: COLLECTION_NAME,
+      embeddingFunction: null,
     });
   }
   async upsert(documents: VectorDocument[]): Promise<void> {
@@ -35,25 +36,39 @@ export class ChromaVectorRepository implements VectorRepository {
       metadatas: documents.map((doc) => doc.metadata),
     });
   }
-  async delete(ids: string[]): Promise<void> {
-    if (!ids.length) {
-      return;
-    }
-
-    const collection = await this.collection();
-
-    await collection.delete({
-      ids,
-    });
+ async delete(
+  ids: string[],
+  userId: string,
+): Promise<void> {
+  if (!ids.length) {
+    return;
   }
-  async search(embedding: number[], limit = 5): Promise<SearchVectorResult[]> {
+
+  const collection =
+    await this.collection();
+
+  await collection.delete({
+    ids,
+    where: {
+      userId,
+    },
+  });
+}
+  async search(
+  embedding: number[],
+  limit = 5,
+  filter?: Record<string, string>,
+): Promise<SearchVectorResult[]> {
    
     const collection = await this.collection();
 
     const result = await collection.query({
-      queryEmbeddings: [embedding],
-      nResults: limit,
-    });
+  queryEmbeddings: [embedding],
+  nResults: limit,
+  ...(filter && {
+    where: filter,
+  }),
+});
 
     const ids = result.ids?.[0] ?? [];
 

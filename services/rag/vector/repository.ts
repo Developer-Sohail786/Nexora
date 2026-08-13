@@ -1,16 +1,21 @@
-import { SearchVectorResult, VectorDocument } from "./types";
+import {
+  SearchVectorResult,
+  VectorDocument,
+} from "./types";
 
-export interface VectorRepository{
-    upsert(
-        documents: VectorDocument[],
-    ): Promise<void>;
+export interface VectorRepository {
+  upsert(
+    documents: VectorDocument[],
+  ): Promise<void>;
 
-    search(
-        embedding: number[],
-        limit?: number,
-    ): Promise<SearchVectorResult[]>;
+ search(
+  embedding: number[],
+  limit?: number,
+  filter?: Record<string, string>,
+): Promise<SearchVectorResult[]>;
 
-    delete(
-        ids: string[],
-    ): Promise<void>
+  delete(
+    ids: string[],
+    userId: string,
+  ): Promise<void>;
 }

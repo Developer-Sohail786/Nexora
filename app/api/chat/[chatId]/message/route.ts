@@ -24,7 +24,7 @@ import {
 
 import { isSearchPrompt } from "@/lib/utils/is-search-prompt";
 import { rateLimits } from "@/lib/rateLimit";
-
+import { detectPromptInjection } from "@/lib/security/prompt-injection";
 
 export async function POST(
   req: NextRequest,
@@ -62,6 +62,21 @@ if (!success) {
     const body: SendMessageInput = SendMessageSchema.parse(await req.json());
 
     const { content, model, files, editingMessageId, forceImage } = body;
+
+    const injectionCheck =
+  detectPromptInjection(content);
+
+if (injectionCheck.detected) {
+  return NextResponse.json(
+    {
+      message:
+        "Your message contains an unsafe instruction pattern.",
+    },
+    {
+      status: 400,
+    },
+  );
+}
    
 
     let finalPrompt = content;

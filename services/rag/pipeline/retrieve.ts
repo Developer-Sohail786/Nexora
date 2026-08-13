@@ -19,17 +19,13 @@ export async function retrieve({
     const { embedding } =
       await generateEmbedding(query);
 
-    const results =
-      await vectorRepository.search(
-        embedding,
-        topK,
-      );
+    const results = await vectorRepository.search(
+  embedding,
+  topK,
+  { userId },
+);
 
-    return results.filter(
-      (result) =>
-        result.metadata.userId ===
-        userId,
-    );
+    return results;
   } catch (error) {
     console.warn(
       "RAG retrieval unavailable:",

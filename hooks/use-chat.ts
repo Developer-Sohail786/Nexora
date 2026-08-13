@@ -204,22 +204,22 @@ const handleSend = async (
       },
     );
 
-    if (!response.ok) {
-      const error =
-        await response.json();
+   if (!response.ok) {
+  const error = await response.json();
 
-      setChatMessages((prev) =>
-        prev.filter(
-          (msg) =>
-            msg.id !== aiMessage.id,
-        ),
-      );
+  setChatMessages((prev) =>
+    prev.filter(
+      (msg) => msg.id !== aiMessage.id,
+    ),
+  );
 
-      throw new Error(
-        error.message ??
-          "Something went wrong.",
-      );
-    }
+  toast.error(
+    error.message ??
+      "Something went wrong.",
+  );
+
+  return;
+}
 
     if (currentEditingMessageId) {
       setEditingMessageId(null);
@@ -437,9 +437,17 @@ const handleSend = async (
 
    
 
-    if (!response.ok) {
-      throw new Error(text);
-    }
+if (!response.ok) {
+  let message = "Unable to upload this file.";
+
+  try {
+    const data = JSON.parse(text);
+    message = data.message ?? message;
+  } catch {}
+
+  toast.error(message);
+  return;
+}
 
     const uploadedFile = JSON.parse(text);
 

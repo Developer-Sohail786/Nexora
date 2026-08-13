@@ -9,6 +9,9 @@ import { Readable } from "stream";
 import type { UploadApiResponse } from "cloudinary";
 import { rateLimits } from "@/lib/rateLimit";
 
+import { detectPromptInjection } from "@/lib/security/prompt-injection";
+import { validateFileContent } from "@/lib/security/file-validation";
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ chatId: string }> },
@@ -16,24 +19,22 @@ export async function POST(
   try {
     const session = await auth();
     const ip =
-  req.headers.get("x-forwarded-for") ??
-  req.headers.get("x-real-ip") ??
-  "127.0.0.1";
+      req.headers.get("x-forwarded-for") ??
+      req.headers.get("x-real-ip") ??
+      "127.0.0.1";
 
-const { success } =
-  await rateLimits.upload.limit(ip);
+    const { success } = await rateLimits.upload.limit(ip);
 
-if (!success) {
-  return NextResponse.json(
-    {
-      message:
-        "Too many file uploads. Please try again later.",
-    },
-    {
-      status: 429,
-    },
-  );
-}
+    if (!success) {
+      return NextResponse.json(
+        {
+          message: "Too many file uploads. Please try again later.",
+        },
+        {
+          status: 429,
+        },
+      );
+    }
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -54,42 +55,82 @@ if (!success) {
 
     const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
 
-    const ALLOWED_FILE_TYPES = [
-  "pdf",
-  "docx",
-  "txt",
-];
+    const ALLOWED_FILE_TYPES = {
+      pdf: "application/pdf",
+      docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      txt: "text/plain",
+    } as const;
 
-if (!ALLOWED_FILE_TYPES.includes(extension)) {
-  return NextResponse.json(
-    {
-      message:
-        "Unsupported file type.",
-    },
-    {
-      status: 400,
-    },
-  );
-}
+    if (!(extension in ALLOWED_FILE_TYPES)) {
+      return NextResponse.json(
+        {
+          message: "Unsupported file type.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const expectedMime =
+      ALLOWED_FILE_TYPES[extension as keyof typeof ALLOWED_FILE_TYPES];
 
-if (file.size > MAX_FILE_SIZE) {
-  return NextResponse.json(
-    {
-      message:
-        "File size exceeds 10MB.",
-    },
-    {
-      status: 400,
-    },
-  );
-}
+    if (file.type !== expectedMime) {
+      return NextResponse.json(
+        {
+          message: "File type does not match its extension.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        {
+          message: "File size exceeds 10MB.",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
 
     const arrayBuffer = await file.arrayBuffer();
     const fileBuffer = Buffer.from(arrayBuffer);
 
+    try {
+  await validateFileContent(
+    fileBuffer,
+    extension,
+  );
+} catch (error) {
+  return NextResponse.json(
+    {
+      message:
+        error instanceof Error
+          ? error.message
+          : "Invalid file.",
+    },
+    {
+      status: 400,
+    },
+  );
+}
+
     const content = await getFileContent(fileBuffer, extension);
+
+    const securityCheck = detectPromptInjection(content);
+
+    if (securityCheck.detected) {
+      console.warn(
+        `Potential prompt injection detected in uploaded file: ${file.name}`,
+        securityCheck.reasons,
+      );
+    }
+
     const user = await prisma.user.findUnique({
       where: {
         email: session.user.email,
