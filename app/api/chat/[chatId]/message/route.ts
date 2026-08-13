@@ -126,6 +126,11 @@ ${fileContext}`;
         plan: true,
       },
     });
+    console.log("SUBSCRIPTION DEBUG:", {
+  userId: user?.id,
+  plan: user?.plan,
+  model,
+});
 
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -253,41 +258,77 @@ ${fileContext}`;
     const encoder = new TextEncoder();
     let fullResponse = "";
 
-    const stream = new ReadableStream({
-      async start(controller) {
+   const stream = new ReadableStream({
+  async start(controller) {
+    let closed = false;
+
+    try {
+      for await (const chunk of result.textStream) {
+        if (closed) break;
+
+        fullResponse += chunk;
+
         try {
-          for await (const chunk of result.textStream) {
-            fullResponse += chunk;
-            controller.enqueue(encoder.encode(chunk));
-          }
-
-          const cleanedResponse = cleanAIResponse(fullResponse);
-
-          await saveAIMessage(chatId, model, {
-            type: MessageType.TEXT,
-            content: cleanedResponse,
-          });
-
-          if (chat.title === "New Chat") {
-            const title = await generateChatTitle(content);
-
-            await prisma.chat.update({
-              where: {
-                id: chatId,
-              },
-              data: {
-                title,
-              },
-            });
-          }
-
-          controller.close();
+          controller.enqueue(
+            encoder.encode(chunk),
+          );
         } catch (error) {
-          console.error(error);
-          controller.error(error);
+          closed = true;
+          console.warn(
+            "Stream controller closed:",
+            error,
+          );
+          break;
         }
-      },
-    });
+      }
+
+      if (closed) return;
+
+      const cleanedResponse =
+        cleanAIResponse(fullResponse);
+
+      await saveAIMessage(chatId, model, {
+        type: MessageType.TEXT,
+        content: cleanedResponse,
+      });
+
+      if (chat.title === "New Chat") {
+        const title =
+          await generateChatTitle(content);
+
+        await prisma.chat.update({
+          where: {
+            id: chatId,
+          },
+          data: {
+            title,
+          },
+        });
+      }
+
+      if (!closed) {
+        closed = true;
+        controller.close();
+      }
+    } catch (error) {
+      if (!closed) {
+        closed = true;
+
+        console.error(
+          "AI stream error:",
+          error,
+        );
+
+        controller.error(error);
+      }
+    }
+  },
+
+  cancel() {
+    // Client disconnected or cancelled
+    console.log("AI stream cancelled.");
+  },
+});
 
     return new Response(stream, {
       headers: {

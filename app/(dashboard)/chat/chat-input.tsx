@@ -93,6 +93,30 @@ export default function ChatInput({
   const textareaRef =
     useRef<HTMLTextAreaElement>(null);
 
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current;
+
+    if (!textarea) return;
+
+    textarea.style.height = "auto";
+
+    const maxHeight = 160;
+
+    textarea.style.height = `${Math.min(
+      textarea.scrollHeight,
+      maxHeight,
+    )}px`;
+
+    textarea.style.overflowY =
+      textarea.scrollHeight > maxHeight
+        ? "auto"
+        : "hidden";
+  };
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [inputValue]);
+
   useEffect(() => {
     function handleShortcut(
       e: globalThis.KeyboardEvent,
@@ -199,7 +223,7 @@ export default function ChatInput({
           />
 
           <div className="flex items-end gap-3">
-                        <textarea
+            <textarea
               ref={textareaRef}
               aria-label="Message input"
               rows={1}
@@ -209,7 +233,7 @@ export default function ChatInput({
               }
               onKeyDown={handleKeyDown}
               placeholder="Message Nexora AI..."
-              className="max-h-40 flex-1 resize-none bg-transparent text-sm leading-relaxed text-white outline-none placeholder:text-[#5C5870] focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]"
+             className="max-h-40 flex-1 resize-none overflow-y-auto bg-transparent text-sm leading-relaxed text-white outline-none placeholder:text-[#5C5870] focus:outline-none focus:ring-1 focus:ring-white/20 focus:ring-offset-0"
             />
 
             <FileUploadButton
@@ -277,7 +301,8 @@ export default function ChatInput({
               fill="currentColor"
             />
           </button>
-        ) : (          <button
+        ) : (
+          <button
             type="button"
             aria-label="Send message"
             onClick={() => handleSend()}
