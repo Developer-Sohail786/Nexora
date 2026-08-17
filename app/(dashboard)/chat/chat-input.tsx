@@ -11,7 +11,6 @@ import {
 import {
   Globe,
   Lock,
-  Mic,
   Send,
   Square,
 } from "lucide-react";
@@ -245,10 +244,7 @@ export default function ChatInput({
               aria-label="Voice input"
               className="shrink-0 text-[#7A748F] transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]"
             >
-              <Mic
-                aria-hidden="true"
-                size={17}
-              />
+             
             </button>
           </div>
         </div>
