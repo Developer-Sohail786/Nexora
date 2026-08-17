@@ -44,10 +44,10 @@ const MODELS: ModelOption[] = [
     id: AI_MODELS.GOOGLE.GEMINI_FLASH,
     name: "Gemini",
   },
-  {
-    id: AI_MODELS.DEEPSEEK.CHAT,
-    name: "DeepSeek",
-  },
+  // {
+  //   id: AI_MODELS.DEEPSEEK.CHAT,
+  //   name: "DeepSeek",
+  // }, no longer offer free tier
   {
     id: AI_MODELS.GROQ.LLAMA,
     name: "Llama 3.3",

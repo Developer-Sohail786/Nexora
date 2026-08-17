@@ -1,9 +1,8 @@
 import ChatLayout from "../chat-layout";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
-import type { ChatMessageData,  } from "@/types/chat";
-
+import { notFound, redirect } from "next/navigation";
+import type { ChatMessageData } from "@/types/chat";
 
 export default async function ChatPage({
   params,
@@ -36,29 +35,30 @@ export default async function ChatPage({
     include: {
       messages: {
         orderBy: {
-          createdAt: "asc"
-        }
-      }
-    }
+          createdAt: "asc",
+        },
+      },
+    },
   });
 
   if (!chat) {
-    notFound();
+    redirect("/dashboard");
   }
-  
-  
 
-return (
-<ChatLayout
-  messages={
-    chat.messages.map((message) => ({
-      ...message,
-      attachments: Array.isArray(message.attachments)
-        ? (message.attachments as ChatMessageData["attachments"])
-        : [],
-    })) as ChatMessageData[]
-  }
-  userImage={user.image}
-  isPro={user.plan === "PRO"}
-/>
-)}
+  return (
+    <ChatLayout
+      messages={
+        chat.messages.map((message) => ({
+          ...message,
+          attachments: Array.isArray(
+            message.attachments,
+          )
+            ? (message.attachments as ChatMessageData["attachments"])
+            : [],
+        })) as ChatMessageData[]
+      }
+      userImage={user.image}
+      isPro={user.plan === "PRO"}
+    />
+  );
+}

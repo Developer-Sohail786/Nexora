@@ -233,7 +233,7 @@ export default function ChatInput({
               }
               onKeyDown={handleKeyDown}
               placeholder="Message Nexora AI..."
-             className="max-h-40 flex-1 resize-none overflow-y-auto bg-transparent text-sm leading-relaxed text-white outline-none placeholder:text-[#5C5870] focus:outline-none focus:ring-1 focus:ring-white/20 focus:ring-offset-0"
+            className="max-h-40 flex-1 resize-none overflow-y-auto bg-transparent text-sm leading-relaxed text-white outline-none placeholder:text-[#5C5870] focus:outline-none focus:ring-0"
             />
 
             <FileUploadButton
