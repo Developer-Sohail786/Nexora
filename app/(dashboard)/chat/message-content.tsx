@@ -8,15 +8,17 @@ import CodeBlock from "./code-block";
 interface MessageContentProps {
   content: string;
   isStreaming?: boolean;
+  className?: string;
 }
 
 export default function MessageContent({
   content,
   isStreaming = false,
+  className = "",
 }: MessageContentProps) {
   return (
     <div
-      className="
+      className={`
         prose prose-invert max-w-none
         prose-p:leading-7
         prose-p:my-3
@@ -46,7 +48,8 @@ export default function MessageContent({
         prose-th:bg-[#252233]
         prose-td:bg-[#1A1725]
         text-sm text-[#C4BEDD]
-      "
+        ${className}
+      `}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
@@ -62,12 +65,20 @@ export default function MessageContent({
               );
             }
 
-            const match = /language-(\w+)/.exec(className || "");
+            const match =
+              /language-(\w+)/.exec(
+                className || "",
+              );
 
             return (
               <CodeBlock
-                language={match?.[1] ?? "text"}
-                code={String(children).replace(/\n$/, "")}
+                language={
+                  match?.[1] ?? "text"
+                }
+                code={String(children).replace(
+                  /\n$/,
+                  "",
+                )}
               />
             );
           },

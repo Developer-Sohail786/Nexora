@@ -200,14 +200,16 @@ export default function AIMessage({
             )}
           </motion.div>
         ) : (
-          <MessageContent
-            content={cleanContent}
-            isStreaming={
-              isStreaming &&
-              cleanContent !==
-                "Thinking...."
-            }
-          />
+          <div className="w-fit max-w-full rounded-2xl border border-none bg-[#2A2833] px-4 py-2">
+            <MessageContent
+              content={cleanContent}
+              isStreaming={
+                isStreaming &&
+                cleanContent !==
+                  "Thinking...."
+              }
+            />
+          </div>
         )}
       </div>
     </motion.div>

@@ -40,7 +40,7 @@ export default function UserMessage({
       transition={{
         duration: 0.25,
       }}
-      className="flex gap-3"
+      className="flex flex-row-reverse gap-3"
     >
       {userImage ? (
         <motion.div
@@ -65,12 +65,9 @@ export default function UserMessage({
         />
       )}
 
-      <div className="group flex-1">
-        <div className="mb-2 flex items-center justify-between">
-          <p className="text-xs font-semibold text-[#7C5CFC]">
-            You
-          </p>
-
+      <div className="group flex min-w-0 flex-1 flex-col items-end">
+        {/* User header */}
+        <div className="mb-2 flex items-center justify-end gap-3">
           {onEdit && (
             <button
               onClick={() => onEdit(id)}
@@ -79,10 +76,15 @@ export default function UserMessage({
               Edit
             </button>
           )}
+
+          <p className="text-xs font-semibold text-[#7C5CFC]">
+            You
+          </p>
         </div>
 
+        {/* Attachments */}
         {attachments?.length ? (
-          <div className="mb-3 space-y-2">
+          <div className="mb-3 flex flex-col items-end gap-2">
             {attachments.map((file) => (
               <motion.a
                 key={file.id}
@@ -105,9 +107,13 @@ export default function UserMessage({
           </div>
         ) : null}
 
-        <MessageContent
-          content={cleanContent}
-        />
+        {/* User message bubble */}
+        <div className="max-w-[80%] rounded-2xl bg-[#2F2F2F] px-4 py-2 text-left">
+          <MessageContent
+            content={cleanContent}
+            className="prose-p:my-0 text-[#ECECEC]"
+          />
+        </div>
       </div>
     </motion.div>
   );
