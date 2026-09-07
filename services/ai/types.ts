@@ -8,7 +8,7 @@ export const AI_MODELS = {
   },
 
   GROQ: {
-    LLAMA: "llama-3.3-70b-versatile",
+     QWEN: "qwen/qwen3.6-27b",
      GPT_OSS_120B: "openai/gpt-oss-120b",
     
   },

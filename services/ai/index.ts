@@ -26,7 +26,7 @@ export async function streamResponse({
         messages,
       });
 
-    case AI_MODELS.GROQ.LLAMA:
+    case AI_MODELS.GROQ.QWEN:
     case AI_MODELS.GROQ.GPT_OSS_120B:
       return streamGroqResponse({
         model,

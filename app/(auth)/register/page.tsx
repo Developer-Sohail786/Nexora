@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -51,14 +51,29 @@ export default function RegisterPage() {
         toast.error(result.message || "Request failed. Please try again.");
         return;
       }
+
+      const loginResult = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (loginResult?.error) {
+        toast.error("Account created, but automatic login failed.");
+        router.push("/login");
+        return;
+      }
+
       toast.success(
         result.message || "Account created successfully. Welcome to Nexora!",
       );
+
       router.push("/dashboard");
     } catch {
       toast.error("Something went wrong. Please try again.");
     }
   };
+
   useEffect(() => {
     if (status === "authenticated") {
       router.push("/dashboard");
@@ -70,7 +85,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         <AuthBranding />
 
-        <div className="rounded-2xl border border-white/[0.07] bg-[#1C1926] p-8 space-y-5">
+        <div className="space-y-5 rounded-2xl border border-white/[0.07] bg-[#1C1926] p-8">
           <div className="text-center">
             <h2 className="text-lg font-semibold text-white">
               Create your account
@@ -165,14 +180,16 @@ export default function RegisterPage() {
                   {...register("terms")}
                   className="mt-0.5 accent-[#7C5CFC]"
                 />
+
                 {errors.terms && (
                   <p id="terms-error" className="text-xs text-red-400">
                     {errors.terms.message}
                   </p>
                 )}
+
                 <label
                   htmlFor="terms"
-                  className="text-xs text-[#7A748F] leading-relaxed"
+                  className="text-xs leading-relaxed text-[#7A748F]"
                 >
                   I agree to the{" "}
                   <a

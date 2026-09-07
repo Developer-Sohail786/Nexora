@@ -40,26 +40,10 @@ type ChatLayoutProps = {
 };
 
 const MODELS: ModelOption[] = [
-  {
-    id: AI_MODELS.GOOGLE.GEMINI_FLASH,
-    name: "Gemini",
-  },
-  // {
-  //   id: AI_MODELS.DEEPSEEK.CHAT,
-  //   name: "DeepSeek",
-  // }, no longer offer free tier
-  {
-    id: AI_MODELS.GROQ.LLAMA,
-    name: "Llama 3.3",
-  },
-  {
-    id: AI_MODELS.GROQ.GPT_OSS_120B,
-    name: "GPT-OSS",
-  },
-  {
-    id: AI_MODELS.COHERE.COMMAND_A,
-    name: "Cohere Command A",
-  },
+  { id: AI_MODELS.GOOGLE.GEMINI_FLASH, name: "Gemini" },
+  { id: AI_MODELS.GROQ.QWEN, name: "Qwen 3.6 27B" },
+  { id: AI_MODELS.GROQ.GPT_OSS_120B, name: "GPT-OSS" },
+  { id: AI_MODELS.COHERE.COMMAND_A, name: "Cohere Command A" },
 ];
 
 export default function ChatLayout({

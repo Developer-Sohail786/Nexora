@@ -40,7 +40,6 @@ export async function routerAIRequest({
   model,
   forceImage = false,
   userId,
-  chatId,
   messages,
 }: RouterParams): Promise<AIResponse> {
   const lastMessage = messages.at(-1);

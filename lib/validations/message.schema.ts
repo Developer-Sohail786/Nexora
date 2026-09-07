@@ -9,13 +9,13 @@ export const SendMessageSchema = z.object({
     .min(1, "Message is required")
     .max(10000, "Message is too long"),
 
-  model: z.enum([
-    AI_MODELS.GOOGLE.GEMINI_FLASH,
-    AI_MODELS.DEEPSEEK.CHAT,
-    AI_MODELS.GROQ.LLAMA,
-    AI_MODELS.GROQ.GPT_OSS_120B,
-   AI_MODELS.COHERE.COMMAND_A
-  ]),
+model: z.enum([
+  AI_MODELS.GOOGLE.GEMINI_FLASH,
+  AI_MODELS.DEEPSEEK.CHAT,
+  AI_MODELS.GROQ.QWEN,
+  AI_MODELS.GROQ.GPT_OSS_120B,
+  AI_MODELS.COHERE.COMMAND_A,
+]),
 
   files: z
   .array(

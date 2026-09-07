@@ -15,19 +15,13 @@ interface ModelSelectorProps {
   isPro: boolean;
   models: ModelOption[];
   selectedModel: ModelOption;
-  setSelectedModel: React.Dispatch<
-    React.SetStateAction<ModelOption>
-  >;
+  setSelectedModel: React.Dispatch<React.SetStateAction<ModelOption>>;
   showModels: boolean;
-  setShowModels: React.Dispatch<
-    React.SetStateAction<boolean>
-  >;
+  setShowModels: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function isPremiumModel(modelId: string) {
-  return !FREE_MODELS.includes(
-    modelId as (typeof FREE_MODELS)[number],
-  );
+  return !FREE_MODELS.includes(modelId as (typeof FREE_MODELS)[number]);
 }
 
 export default function ModelSelector({
@@ -40,19 +34,19 @@ export default function ModelSelector({
 }: ModelSelectorProps) {
   return (
     <div className="relative">
-    <button
-  type="button"
-  aria-label="Select AI model"
-  aria-haspopup="listbox"
-  aria-expanded={showModels}
-  onClick={() => setShowModels((prev) => !prev)}
-  className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#242034] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2A2640] focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]"
->
-       <Sparkles
-  aria-hidden="true"
-  size={14}
-  className="text-[#7C5CFC]"
-/>
+      <button
+        type="button"
+        aria-label="Select AI model"
+        aria-haspopup="listbox"
+        aria-expanded={showModels}
+        onClick={() => setShowModels((prev) => !prev)}
+        className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-[#242034] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2A2640] focus:outline-none focus:ring-2 focus:ring-[#7C5CFC] focus:ring-offset-2 focus:ring-offset-[#111018]"
+      >
+        <Sparkles
+          aria-hidden="true"
+          size={14}
+          className="text-[#7C5CFC]"
+        />
 
         <div className="flex items-center gap-2">
           <span>{selectedModel.name}</span>
@@ -64,7 +58,8 @@ export default function ModelSelector({
           )}
         </div>
 
-        <ChevronUp aria-hidden="true"
+        <ChevronUp
+          aria-hidden="true"
           size={14}
           className={`text-[#7A748F] transition-transform duration-200 ${
             showModels ? "rotate-180" : ""
@@ -74,25 +69,21 @@ export default function ModelSelector({
 
       {showModels && (
         <div
-  role="listbox"
-  className="absolute bottom-full left-0 z-50 mb-2 w-56 overflow-hidden rounded-xl border border-white/10 bg-[#1C1926] shadow-xl"
->
+          role="listbox"
+          className="absolute bottom-full left-0 z-50 mb-2 w-56 overflow-hidden rounded-xl border border-white/10 bg-[#1C1926] shadow-xl"
+        >
           {models.map((model) => {
-            const premium =
-              isPremiumModel(model.id);
+            const premium = isPremiumModel(model.id);
 
             return (
-             <button
-  key={model.id}
-  type="button"
-  role="option"
-  aria-selected={selectedModel.id === model.id}
-  aria-label={`${model.name}${premium ? " Pro model" : ""}`}
+              <button
+                key={model.id}
+                type="button"
+                role="option"
+                aria-selected={selectedModel.id === model.id}
+                aria-label={`${model.name}${premium ? " Pro model" : ""}`}
                 onClick={() => {
-                  if (
-                    premium &&
-                    !isPro
-                  ) {
+                  if (premium && !isPro) {
                     toast.info(
                       "Upgrade to Nexora Pro to use this AI model.",
                     );
@@ -107,15 +98,15 @@ export default function ModelSelector({
                     ? "cursor-not-allowed opacity-70"
                     : "hover:bg-[#2A2640]"
                 } ${
-                  selectedModel.id ===
-                  model.id
+                  selectedModel.id === model.id
                     ? "text-[#7C5CFC]"
                     : "text-white"
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  {premium && (
-                    <Lock aria-hidden="true"
+                  {premium && !isPro && (
+                    <Lock
+                      aria-hidden="true"
                       size={12}
                       className="text-[#FACC15]"
                     />
@@ -131,8 +122,7 @@ export default function ModelSelector({
                     </span>
                   )}
 
-                  {selectedModel.id ===
-                    model.id && (
+                  {selectedModel.id === model.id && (
                     <span aria-hidden="true">✓</span>
                   )}
                 </div>

@@ -43,7 +43,7 @@ export default function LoginForm() {
       }
       toast.success("Welcome back!");
 
-      // router.push("/dashboard")
+      router.push("/dashboard")
     } catch {
       toast.error("Something went wrong. Please try again.");
     }
