@@ -39,3 +39,27 @@ export const metadata: Metadata = {
       "An AI workspace for multi-model chat, document intelligence, web search, and AI-powered productivity.",
   },
 }
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <AuthSessionProvider>
+          <ThemeProvider>
+            {children}
+            <Toaster richColors position="top-right" />
+          </ThemeProvider>
+        </AuthSessionProvider>
+
+        <Script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="afterInteractive"
+        />
+      </body>
+    </html>
+  )
+}
